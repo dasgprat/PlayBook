@@ -13,7 +13,7 @@ npm run serve
 Alternatively, you can simply run `npm start` after installing the dependencies to use the local development server provided by Webpack. You can also specify the server on which to serve the built client application with `npm run serve -- --port <port>` or `npm start -- --port <port>`. The output of the `start` and `serve` commands will indicate on what port the web application is running.
 
 ## Configuration
-The application gets its configuration by loading a JSON file from the web server after the React application has loaded on the client's web browser. This uses the `@bradenhc/client-config` library found on NPM. The config file is located under `src/assets/config`. It supports setting the API version and port number, which are used to construct the URL the web application will use when communicating with the [API Backend](../api-server).
+The application gets its configuration by loading a JSON file from the web server after the React application has loaded on the client's web browser. This uses the [`@bradenhc/client-config`](https://www.npmjs.com/package/@bradenhc/client-config) library found on NPM. The config file is located under `src/assets/config`. It supports setting the API version and port number, which are used to construct the URL the web application will use when communicating with the [API Backend](../api-server).
 
 ## Technologies Involved
 

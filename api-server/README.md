@@ -16,7 +16,7 @@ The output should indicate that there is a web server running locally and that t
 The API server uses [JSON Web Tokens ](https://jwt.io/) as a stateless method of authenticating API requests. JWT's require that a secret key be used to encrypt contents of the token. That secret key should be put under `etc/secrets/private.key`. This repository is configured with `.gitignore` to not check in anything under the `secret/` directory except for the [explanitory README file](./etc/secrets). **You will need to create a `private.key` file in this directory before running the API server**.
 
 ## Configuration
-The `config/` directory contains configuration for the server. The NPM [`config`](https://www.npmjs.com/package/config) library is used to load the config files, which are in YAML format. In these files you can specify things such as the database connection parameters and the server security settings. See the [`default.yml`](./config/default.yml) file for more information.
+The `config/` directory contains configuration for the server. The NPM [`config`](https://www.npmjs.com/package/config) library is used to load the config files, which are in YAML format. In these files you can specify things such as the database connection parameters and the server security settings. See the [`default.yml`](./config/default.yml) file for more information. To use configuration specific to your local machine, create a `local.yml` file. **Do not edit the `default.yml` file directly**. The `local.yml` file will not be checked in to source control, so you can customize it how you want.
 
 ## Technologies Involved
 

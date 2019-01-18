@@ -18,7 +18,7 @@ The `config/` directory contains configuration for the server. The NPM [`config`
 ## Technologies Involved
 
 | Technology/Library | Description | Link |
-|---|---|
+|---|---|---|
 | Node.js | Execution runtime | [Details](https://nodejs.org/en/) |
 | MongoDB | Data persistence | [Details](https://www.mongodb.com/) |
 | Mongoose | Database access and schema validation | [Details](https://www.npmjs.com/package/mongoose) |

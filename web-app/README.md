@@ -18,7 +18,7 @@ The application gets its configuration by loading a JSON file from the web serve
 ## Technologies Involved
 
 | Technology/Library | Description | Link |
-|---|---|
+|---|---|---|
 | ReactJS | Single-page-application framework | [Details](https://reactjs.org/) |
 | React Router | URL routing for react applications | [Details](https://reacttraining.com/react-router/web/guides/quick-start) |
 | Material UI | React library implementing Google's material design UI principles | [Details](https://material-ui.com/) |

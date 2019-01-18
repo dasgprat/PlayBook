@@ -15,6 +15,8 @@ Alternatively, you can simply run `npm start` after installing the dependencies 
 ## Configuration
 The application gets its configuration by loading a JSON file from the web server after the React application has loaded on the client's web browser. This uses the [`@bradenhc/client-config`](https://www.npmjs.com/package/@bradenhc/client-config) library found on NPM. The config file is located under `src/assets/config`. It supports setting the API version and port number, which are used to construct the URL the web application will use when communicating with the [API Backend](../api-server).
 
+For local development, **do not edit the `default.json` file directly**. Instead, create a `local.json` file, which will be ignored by source control but will still be loaded by the configuration library.
+
 ## Technologies Involved
 
 | Technology/Library | Description | Link |

@@ -33,6 +33,9 @@ function find(query) {
     if (query && query.id) {
         q._id = query.id;
     }
+    if(query && query.username) {
+        q.username = query.username;
+    }
     return new Promise((resolve, reject) => {
         db.find(q)
             .lean()

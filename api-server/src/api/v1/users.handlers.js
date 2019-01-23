@@ -1,7 +1,12 @@
 const UserModel = require('../../model/user.model');
+const AuthModel = require('../../model/auth.model');
+const { hash } = require('./auth.handlers');
 const response = require('./response');
 const status = require('http-status');
 const logger = require('winstonson')(module);
+const crypto = require('crypto');
+const config = require('config');
+const _config = config.get('security');
 
 module.exports = {
     getUser,
@@ -24,9 +29,22 @@ function prepUserResponse(user) {
 
 async function addNewUser(req, res) {
     try {
+        if(!req.body.username || !req.body.password){
+            return response.sendErrorResponse(res, status.BAD_REQUEST, 'Missing username and/or password');
+        }
+        logger.trace('Verifying user does not already exist');
+        let user = await UserModel.find({ username: req.body.username });
+        if( user !== undefined) {
+            return response.sendActionResponse(res, status.OK, 'User already exists', user);
+        }
         logger.trace('Adding new user with username ' + req.body.username);
-        let user = await UserModel.merge(new UserModel.User(req.body));
-        logger.trace('Added user. Preparing and sending response');
+        user = await UserModel.merge(new UserModel.User(req.body));
+        logger.trace('Added user. Generating authentication entry');
+        let salt = crypto.randomBytes(8).toString('hex');
+        let algo = _config.hashAlgo;
+        let h = hash(algo, salt, req.body.password);
+        await AuthModel.merge(new AuthModel.AuthInfo({ user: user.id, salt, algo, hash: h }));
+        logger.trace('Authentication entry added. Preparing response');
         prepUserResponse(user);
         return response.sendActionResponse(res, status.CREATED, 'Successfully created new user', user);
     } catch (err) {

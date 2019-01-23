@@ -41,7 +41,7 @@ class RegisterController extends React.Component {
         event.stopPropagation();
         event.preventDefault();
         AuthControl.register(this.state, (err, res) => {
-            if (err) return console.log(err.message);
+            if (err) return console.log(err);
             this.props.history.push('/home');
         });
     }

@@ -19,20 +19,13 @@ class AuthController {
         let user = {
             name: form.name,
             username: form.username,
-            contact: {
-                email: form.email
-            }
-        };
-        let auth = {
+            contact: { email: form.email },
             username: form.username,
             password: form.password
         };
         api.post('/users', user, (err, res) => {
             if (err) return cb(err);
-            api.post('/auth', auth, (err, res) => {
-                if (err) return cb(err);
-                return cb(res);
-            });
+            return this.authenticate(user.username, user.password, cb);
         });
     }
 }

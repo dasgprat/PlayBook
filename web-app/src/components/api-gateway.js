@@ -49,6 +49,7 @@ class ApiGateway {
 
     _sendRequest(method, path, data, cb) {
         let success = false;
+        let returnCode = 0;
         let options = {
             method,
             headers: {
@@ -60,9 +61,11 @@ class ApiGateway {
         fetch(this.baseUrl + path, options)
             .then(res => {
                 success = res.ok;
+                returnCode = res.status;
                 return res.json();
             })
             .then(data => {
+                data.status = returnCode;
                 if (!success) return cb(data);
                 cb(null, data);
             })

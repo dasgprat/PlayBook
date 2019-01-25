@@ -3,12 +3,55 @@ const fs = require('fs');
 const config = require('config');
 const path = require('path');
 const { PlaybookError, ErrorCodes } = require('./error');
+const { Strategy } = require('passport-jwt');
 
 let _config = config.get('security');
+let _key = path.join(process.cwd(), _config.jwt.secretKey);
+let _secret = null;
+let _issuer = _config.jwt.issuer;
+let _audience = _config.jwt.audience;
 
-let _key = path.join(process.cwd(), _config.secretKey);
+function _retrieveSecret(cb) {
+    fs.readFile(_key, 'utf8', (err, secret) => {
+        if (err) return cb(new PlaybookError(ErrorCodes.F_FILE_FAILURE, 'Failed to read secret: ' + err.message));
+        _secret = secret;
+        cb();
+    });
+}
 
-let _issuer = "playbook";
+function createPassportStrategy(cb) {
+    if (!_secret) {
+        _retrieveSecret(err => {
+            if (err) return cb(err);
+            let strategy = _generateStrategy(_audience);
+            return cb(null, strategy);
+        });
+    } else {
+        let strategy = _generateStrategy(_audience);
+        return cb(null, strategy);
+    }
+}
+
+function _generateStrategy(audience) {
+    return new Strategy(
+        {
+            jwtFromRequest: function(req) {
+                let token = null;
+                if (req && req.cookies) {
+                    token = req.cookies.auth;
+                }
+                return token;
+            },
+            issuer: _issuer,
+            audience,
+            secretOrKey: _secret
+        },
+        (payload, done) => {
+            // Will appear on 'req' as 'user'
+            done(null, payload);
+        }
+    );
+}
 
 function generate(subject, audience) {
     return new Promise((resolve, reject) => {
@@ -39,10 +82,7 @@ function verify(token, subject, audience) {
             jwt.verify(token, secret, options, (err, decoded) => {
                 if (err)
                     return reject(
-                        new PlaybookError(
-                            ErrorCodes.A_AUTH_TOKEN_FAILURE,
-                            `Failed to validate token: ${err.message}`
-                        )
+                        new PlaybookError(ErrorCodes.A_AUTH_TOKEN_FAILURE, `Failed to validate token: ${err.message}`)
                     );
                 return resolve(decoded);
             });
@@ -52,5 +92,6 @@ function verify(token, subject, audience) {
 
 module.exports = {
     generate,
-    verify
+    verify,
+    createPassportStrategy
 };

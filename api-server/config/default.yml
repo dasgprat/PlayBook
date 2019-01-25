@@ -17,7 +17,11 @@ server:
 # to authenticate requests
 security:
     hashAlgo: sha256
-    secretKey: /etc/secrets/private.key
+    jwt:
+        audience: playbook-app.com
+        issuer: playbook
+        secretKey: /etc/secrets/private.key
+        
 
 email:
     address: 'applicationplaybook@gmail.com'

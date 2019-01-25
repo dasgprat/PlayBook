@@ -2,13 +2,15 @@ const express = require('express');
 const config = require('config');
 const api = require('./src/api/v1/routes');
 const mongoose = require('mongoose');
+const morgan = require('morgan');
+const logger = require('winstonson')(module);
 
 const serverConfig = config.get('server');
 const databaseConfig = config.get('database');
 
 const mongoUrl = `mongodb://${databaseConfig.host}:${databaseConfig.port}/${databaseConfig.name}`;
 
-process.title = "playbook-api";
+process.title = 'playbook-api';
 
 mongoose.connect(
     mongoUrl,
@@ -19,6 +21,10 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
     console.log(`Connected to Mongo at ${mongoUrl}`);
     const app = express();
+
+    // Add trace logging on HTTP requests with Morgan
+    app.use(morgan('tiny', { stream: logger.stream('trace') }));
+
     app.use(api);
 
     app.use((req, res) => {

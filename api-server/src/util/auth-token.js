@@ -23,16 +23,16 @@ function createPassportStrategy(cb) {
     if (!_secret) {
         _retrieveSecret(err => {
             if (err) return cb(err);
-            let strategy = _generateStrategy(_audience);
+            let strategy = _generateStrategy();
             return cb(null, strategy);
         });
     } else {
-        let strategy = _generateStrategy(_audience);
+        let strategy = _generateStrategy();
         return cb(null, strategy);
     }
 }
 
-function _generateStrategy(audience) {
+function _generateStrategy() {
     return new Strategy(
         {
             jwtFromRequest: function(req) {
@@ -43,7 +43,7 @@ function _generateStrategy(audience) {
                 return token;
             },
             issuer: _issuer,
-            audience,
+            audience: _audience,
             secretOrKey: _secret
         },
         (payload, done) => {
@@ -57,7 +57,7 @@ function generate(subject) {
     let payload = {
         iss: _issuer,
         sub: subject,
-        aud: audience || [],
+        aud: _audience,
         exp: Math.floor(Date.now() / 1000) + 60 * 60
     };
     return new Promise((resolve, reject) => {

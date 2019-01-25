@@ -3,13 +3,14 @@ const db = require('./db/user.db');
 const errors = require('../util/error');
 
 class User {
-    constructor(properties) {
-        if (!properties) properties = {};
-        this.id = properties.id || properties._id || uuid();
-        this.username = properties.username;
-        this.name = properties.name;
+    constructor(props) {
+        if (!props) props = {};
+        this.id = props.id || props._id || uuid();
+        this.username = props.username;
+        this.name = props.name;
+        this.age = props.age;
         this.contact = {
-            email: properties.contact !== undefined ? properties.contact.email : undefined
+            email: props.contact !== undefined ? props.contact.email : undefined
         };
     }
 }

@@ -53,23 +53,28 @@ function _generateStrategy(audience) {
     );
 }
 
-function generate(subject, audience) {
+function generate(subject) {
+    let payload = {
+        iss: _issuer,
+        sub: subject,
+        aud: audience || [],
+        exp: Math.floor(Date.now() / 1000) + 60 * 60
+    };
     return new Promise((resolve, reject) => {
-        fs.readFile(_key, 'utf8', (err, secret) => {
-            if (err) {
-                return reject(err);
-            }
-            let payload = {
-                iss: _issuer,
-                sub: subject,
-                aud: audience || [],
-                exp: Math.floor(Date.now() / 1000) + 60 * 60
-            };
-            jwt.sign(payload, secret, (err, token) => {
+        if (!_secret) {
+            _retrieveSecret((err) => {
+                if (err) return reject(err);
+                jwt.sign(payload, _secret, (err, token) => {
+                    if (err) return reject(err);
+                    return resolve(token);
+                });
+            });
+        } else {
+            jwt.sign(payload, _secret, (err, token) => {
                 if (err) return reject(err);
                 return resolve(token);
             });
-        });
+        }
     });
 }
 

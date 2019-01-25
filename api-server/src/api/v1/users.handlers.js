@@ -7,6 +7,7 @@ const logger = require('winstonson')(module);
 const crypto = require('crypto');
 const config = require('config');
 const _config = config.get('security');
+const verify = require('../../email/verification');
 
 module.exports = {
     getUser,
@@ -44,6 +45,10 @@ async function addNewUser(req, res) {
         let algo = _config.hashAlgo;
         let h = hash(algo, salt, req.body.password);
         await AuthModel.merge(new AuthModel.AuthInfo({ user: user.id, salt, algo, hash: h }));
+        // Send the verification email
+        verify.sendVerificationRequest(user.name, user.contact.email, 'https://google.com', (err) => {
+            if(err) logger.error(err);
+        });
         logger.trace('Authentication entry added. Preparing response');
         prepUserResponse(user);
         return response.sendActionResponse(res, status.CREATED, 'Successfully created new user', user);

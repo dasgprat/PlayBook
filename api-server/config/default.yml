@@ -18,3 +18,8 @@ server:
 security:
     hashAlgo: sha256
     secretKey: /etc/secrets/private.key
+
+email:
+    address: 'applicationplaybook@gmail.com'
+    credentials: '/etc/secrets/email.ini'
+    redirectUrl: 'https://developers.google.com/oauthplayground'

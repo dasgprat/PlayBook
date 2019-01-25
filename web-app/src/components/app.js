@@ -4,6 +4,7 @@ import Login from './auth/login-control';
 import Register from './auth/register-control';
 import Home from './home/home-control';
 import ProtectedRoute from './auth/protected-route';
+import About from './about/about-control';
 
 class App extends React.Component {
     render() {
@@ -12,8 +13,9 @@ class App extends React.Component {
                 <div>
                     <Route path="/login" component={Login} />
                     <Route path="/register" component={Register} />
+                    <Route path="/about" component={About}/>
                     <ProtectedRoute path="/home" component={Home} />
-                    <Redirect to="/home" />
+                    
                 </div>
             </Router>
         );

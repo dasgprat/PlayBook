@@ -26,79 +26,86 @@ function AuthView({
     onPasswordChange
 }) {
     return (
-        <main className={classes.main}>
-            <CssBaseline />
-            <Paper className={classes.paper}>
-                <Avatar className={classes.avatar}>{action === 'login' ? <LockIcon /> : <AssignmentIcon />}</Avatar>
-                <Typography component="h1" variant="h5">
-                    {action === 'login' ? 'Sign In' : 'Register'}
-                </Typography>
-                <form className={classes.form} onSubmit={onLoginFormSubmit}>
-                    {action === 'register' ? (
-                        <React.Fragment>
-                            <FormControl margin="normal" required fullWidth>
-                                <InputLabel htmlFor="name">Name</InputLabel>
-                                <Input
-                                    id="name"
-                                    name="name"
-                                    autoComplete="name"
-                                    onChange={onNameChange}
-                                    autoFocus={action === 'register'}
-                                />
-                            </FormControl>
-                            <FormControl margin="normal" required fullWidth>
-                                <InputLabel htmlFor="email">Email</InputLabel>
-                                <Input id="email" name="email" onChange={onEmailChange} autoComplete="email" />
-                            </FormControl>
-                        </React.Fragment>
-                    ) : (
-                        ''
-                    )}
-                    <FormControl margin="normal" required fullWidth>
-                        <InputLabel htmlFor="username">Username</InputLabel>
-                        <Input
-                            id="username"
-                            name="username"
-                            autoComplete="username"
-                            onChange={onUsernameChange}
-                            autoFocus={action === 'login'}
-                        />
-                    </FormControl>
-                    <FormControl margin="normal" required fullWidth>
-                        <InputLabel htmlFor="password">Password</InputLabel>
-                        <Input
-                            name="password"
-                            type="password"
-                            id="password"
-                            onChange={onPasswordChange}
-                            autoComplete="current-password"
-                        />
-                    </FormControl>
-                    {/* TODO: implement remember me*/}
-                    {action === 'login' ? (
-                        <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
-                    ) : (
-                        ''
-                    )}
-                    <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+        <div className={classes.loginRoot}>
+            <img src="/assets/collage.jpg" className={classes.bgImage} />
+            <main className={classes.main}>
+                <CssBaseline />
+                <Paper className={classes.paper}>
+                    <Typography variant="h3">PlayBook</Typography>
+                    <Avatar className={classes.avatar}>{action === 'login' ? <LockIcon /> : <AssignmentIcon />}</Avatar>
+                    <Typography component="h1" variant="h5">
                         {action === 'login' ? 'Sign In' : 'Register'}
-                    </Button>
-                    {action === 'login' ? (
-                        <div className={classes.register}>
-                            <Typography>
-                                Don't have an account? <Link to="/register">Register</Link>
-                            </Typography>
-                        </div>
-                    ) : (
-                        <div className={classes.register}>
-                            <Typography>
-                                Already have an account? <Link to="/login">Sign in</Link>
-                            </Typography>
-                        </div>
-                    )}
-                </form>
-            </Paper>
-        </main>
+                    </Typography>
+                    <form className={classes.form} onSubmit={onLoginFormSubmit}>
+                        {action === 'register' ? (
+                            <React.Fragment>
+                                <FormControl margin="normal" required fullWidth>
+                                    <InputLabel htmlFor="name">Name</InputLabel>
+                                    <Input
+                                        id="name"
+                                        name="name"
+                                        autoComplete="name"
+                                        onChange={onNameChange}
+                                        autoFocus={action === 'register'}
+                                    />
+                                </FormControl>
+                                <FormControl margin="normal" required fullWidth>
+                                    <InputLabel htmlFor="email">Email</InputLabel>
+                                    <Input id="email" name="email" onChange={onEmailChange} autoComplete="email" />
+                                </FormControl>
+                            </React.Fragment>
+                        ) : (
+                            ''
+                        )}
+                        <FormControl margin="normal" required fullWidth>
+                            <InputLabel htmlFor="username">Username</InputLabel>
+                            <Input
+                                id="username"
+                                name="username"
+                                autoComplete="username"
+                                onChange={onUsernameChange}
+                                autoFocus={action === 'login'}
+                            />
+                        </FormControl>
+                        <FormControl margin="normal" required fullWidth>
+                            <InputLabel htmlFor="password">Password</InputLabel>
+                            <Input
+                                name="password"
+                                type="password"
+                                id="password"
+                                onChange={onPasswordChange}
+                                autoComplete="current-password"
+                            />
+                        </FormControl>
+                        {/* TODO: implement remember me*/}
+                        {action === 'login' ? (
+                            <FormControlLabel
+                                control={<Checkbox value="remember" color="primary" />}
+                                label="Remember me"
+                            />
+                        ) : (
+                            ''
+                        )}
+                        <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+                            {action === 'login' ? 'Sign In' : 'Register'}
+                        </Button>
+                        {action === 'login' ? (
+                            <div className={classes.register}>
+                                <Typography>
+                                    Don't have an account? <Link to="/register">Register</Link>
+                                </Typography>
+                            </div>
+                        ) : (
+                            <div className={classes.register}>
+                                <Typography>
+                                    Already have an account? <Link to="/login">Sign in</Link>
+                                </Typography>
+                            </div>
+                        )}
+                    </form>
+                </Paper>
+            </main>
+        </div>
     );
 }
 

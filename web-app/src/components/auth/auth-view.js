@@ -23,7 +23,8 @@ function AuthView({
     onNameChange,
     onEmailChange,
     onUsernameChange,
-    onPasswordChange
+    onPasswordChange,
+    error
 }) {
     return (
         <div className={classes.loginRoot}>
@@ -36,6 +37,13 @@ function AuthView({
                     <Typography component="h1" variant="h5">
                         {action === 'login' ? 'Sign In' : 'Register'}
                     </Typography>
+                    {error ? (
+                        <Typography className={classes.errorMessage} color="error">
+                            { error }
+                        </Typography>
+                    ) : (
+                        ''
+                    )}
                     <form className={classes.form} onSubmit={onLoginFormSubmit}>
                         {action === 'register' ? (
                             <React.Fragment>
@@ -52,6 +60,17 @@ function AuthView({
                                 <FormControl margin="normal" required fullWidth>
                                     <InputLabel htmlFor="email">Email</InputLabel>
                                     <Input id="email" name="email" onChange={onEmailChange} autoComplete="email" />
+                                </FormControl>
+                                <FormControl margin="normal" required fullWidth>
+                                    <InputLabel htmlFor="age">Age</InputLabel>
+                                    <Input
+                                        id="age"
+                                        name="age"
+                                        type="number"
+                                        inputProps={{ min: 1 }}
+                                        onChange={onEmailChange}
+                                        autoComplete="age"
+                                    />
                                 </FormControl>
                             </React.Fragment>
                         ) : (
@@ -77,15 +96,6 @@ function AuthView({
                                 autoComplete="current-password"
                             />
                         </FormControl>
-                        {/* TODO: implement remember me*/}
-                        {action === 'login' ? (
-                            <FormControlLabel
-                                control={<Checkbox value="remember" color="primary" />}
-                                label="Remember me"
-                            />
-                        ) : (
-                            ''
-                        )}
                         <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
                             {action === 'login' ? 'Sign In' : 'Register'}
                         </Button>

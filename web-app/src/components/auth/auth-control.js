@@ -20,6 +20,7 @@ class AuthController {
             name: form.name,
             username: form.username,
             contact: { email: form.email },
+            age: form.age,
             username: form.username,
             password: form.password
         };

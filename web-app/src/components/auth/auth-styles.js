@@ -16,6 +16,10 @@ export default function styles(theme) {
             left: '50%',
             transform: 'translate(-50%, -50%)',
             zIndex: -1,
+            opacity: '0.5'
+        },
+        errorMessage: {
+            paddingTop: '5px'
         },
         main: {
             width: 'auto',

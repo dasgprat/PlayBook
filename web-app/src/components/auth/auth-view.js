@@ -22,6 +22,7 @@ function AuthView({
     onLoginFormSubmit,
     onNameChange,
     onEmailChange,
+    onAgeChange,
     onUsernameChange,
     onPasswordChange,
     error
@@ -68,7 +69,7 @@ function AuthView({
                                         name="age"
                                         type="number"
                                         inputProps={{ min: 1 }}
-                                        onChange={onEmailChange}
+                                        onChange={onAgeChange}
                                         autoComplete="age"
                                     />
                                 </FormControl>

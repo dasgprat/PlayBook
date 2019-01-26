@@ -10,6 +10,7 @@ class RegisterController extends React.Component {
         this.state = {
             name: '',
             email: '',
+            age: null,
             username: '',
             password: '',
             error: null
@@ -20,6 +21,7 @@ class RegisterController extends React.Component {
         this.onUsernameChange = this.onUsernameChange.bind(this);
         this.onPasswordChange = this.onPasswordChange.bind(this);
         this.onLoginFormSubmit = this.onLoginFormSubmit.bind(this);
+        this.onAgeChange = this.onAgeChange.bind(this);
     }
 
     onNameChange(event) {
@@ -36,6 +38,10 @@ class RegisterController extends React.Component {
 
     onPasswordChange(event) {
         this.setState({ password: event.target.value });
+    }
+
+    onAgeChange(event) {
+        this.setState({ age: event.target.value });
     }
 
     onLoginFormSubmit(event) {
@@ -57,6 +63,7 @@ class RegisterController extends React.Component {
                 onLoginFormSubmit={this.onLoginFormSubmit}
                 onNameChange={this.onNameChange}
                 onEmailChange={this.onEmailChange}
+                onAgeChange={this.onAgeChange}
                 onUsernameChange={this.onUsernameChange}
                 onPasswordChange={this.onPasswordChange}
                 error={this.state.error}

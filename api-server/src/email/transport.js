@@ -19,8 +19,8 @@ function _createTransport(cb) {
         _oauthClient.setCredentials({
             refresh_token: credentials.refreshToken
         });
-        const tokens = await _oauthClient.refreshAccessToken();
-        const accessToken = tokens.credentials.access_token;
+        const headers = await _oauthClient.getRequestHeaders();
+        const accessToken = headers.Authorization.split(' ')[1];
         _transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {

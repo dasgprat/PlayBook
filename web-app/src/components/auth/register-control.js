@@ -10,8 +10,10 @@ class RegisterController extends React.Component {
         this.state = {
             name: '',
             email: '',
+            age: null,
             username: '',
-            password: ''
+            password: '',
+            error: null
         };
 
         this.onNameChange = this.onNameChange.bind(this);
@@ -19,6 +21,7 @@ class RegisterController extends React.Component {
         this.onUsernameChange = this.onUsernameChange.bind(this);
         this.onPasswordChange = this.onPasswordChange.bind(this);
         this.onLoginFormSubmit = this.onLoginFormSubmit.bind(this);
+        this.onAgeChange = this.onAgeChange.bind(this);
     }
 
     onNameChange(event) {
@@ -37,11 +40,18 @@ class RegisterController extends React.Component {
         this.setState({ password: event.target.value });
     }
 
+    onAgeChange(event) {
+        this.setState({ age: event.target.value });
+    }
+
     onLoginFormSubmit(event) {
         event.stopPropagation();
         event.preventDefault();
         AuthControl.register(this.state, (err, res) => {
-            if (err) return console.log(err);
+            if (err) {
+                return this.setState({ error: err.message });
+            }
+            this.setState({ error: null });
             this.props.history.push('/home');
         });
     }
@@ -53,8 +63,10 @@ class RegisterController extends React.Component {
                 onLoginFormSubmit={this.onLoginFormSubmit}
                 onNameChange={this.onNameChange}
                 onEmailChange={this.onEmailChange}
+                onAgeChange={this.onAgeChange}
                 onUsernameChange={this.onUsernameChange}
                 onPasswordChange={this.onPasswordChange}
+                error={this.state.error}
             />
         );
     }

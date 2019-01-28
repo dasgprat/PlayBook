@@ -11,14 +11,8 @@ class Login extends React.Component {
             username: '',
             password: '',
             error: null,
-            loggedIn: false
+            loggedIn: null
         };
-
-        AuthControl.verify(err => {
-            if (!err) {
-                this.setState({ loggedIn: true });
-            }
-        });
 
         this.onLoginFormSubmit = this.onLoginFormSubmit.bind(this);
         this.onUsernameChange = this.onUsernameChange.bind(this);
@@ -26,7 +20,12 @@ class Login extends React.Component {
     }
 
     componentDidMount() {
-        
+        AuthControl.verify(err => {
+            if (err) {
+                return this.setState({ loggedIn: false });
+            }
+            this.setState({ loggedIn: true });
+        });
     }
 
     onUsernameChange(event) {
@@ -45,24 +44,29 @@ class Login extends React.Component {
                 return this.setState({ error: err.message });
             }
             this.setState({ error: null });
-            this.props.history.push('/home');
+            this.props.history.push(`/home/${AuthControl.user}`);
         });
     }
 
     render() {
-        if (this.state.loggedIn) {
-            return <Redirect to={{pathname: '/home'}} />;
+        if (this.state.loggedIn === true) {
+            let pathname = this.props.location.state
+                ? this.props.location.state.from.pathname
+                : `/home/${AuthControl.user}`;
+            return <Redirect to={{ pathname }} />;
+        } else if (this.state.loggedIn === false) {
+            return (
+                <AuthView
+                    action={'login'}
+                    onLoginFormSubmit={this.onLoginFormSubmit}
+                    onUsernameChange={this.onUsernameChange}
+                    onPasswordChange={this.onPasswordChange}
+                    error={this.state.error}
+                />
+            );
+        } else {
+            return <div />;
         }
-
-        return (
-            <AuthView
-                action={'login'}
-                onLoginFormSubmit={this.onLoginFormSubmit}
-                onUsernameChange={this.onUsernameChange}
-                onPasswordChange={this.onPasswordChange}
-                error={this.state.error}
-            />
-        );
     }
 }
 

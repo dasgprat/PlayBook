@@ -3,6 +3,7 @@ import api from '../api-gateway';
 class AuthController {
     constructor() {
         this.isAuthenticated = false;
+        this.user = null;
         this.url = null;
     }
 
@@ -10,6 +11,7 @@ class AuthController {
         api.put('/auth', { username, password }, (err, res) => {
             if (err) return cb(err);
             this.isAuthenticated = true;
+            this.user = username;
             api.setToken(res.content.token);
             return cb(null, res);
         });
@@ -31,9 +33,10 @@ class AuthController {
     }
 
     verify(cb) {
-        api.get('/auth', err => {
-            if(err) cb(err);
+        api.get('/auth', (err, res) => {
+            if(err) return cb(err);
             this.isAuthenticated = true;
+            this.user = res.username;
             cb(null);
         });
     }

@@ -1,7 +1,7 @@
 import React from 'react';
 import AuthView from './auth-view';
 import AuthControl from './auth-control';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Redirect } from 'react-router-dom';
 
 class Login extends React.Component {
     constructor(properties) {
@@ -10,12 +10,22 @@ class Login extends React.Component {
         this.state = {
             username: '',
             password: '',
-            error: null
+            error: null,
+            loggedIn: null
         };
 
         this.onLoginFormSubmit = this.onLoginFormSubmit.bind(this);
         this.onUsernameChange = this.onUsernameChange.bind(this);
         this.onPasswordChange = this.onPasswordChange.bind(this);
+    }
+
+    componentDidMount() {
+        AuthControl.verify(err => {
+            if (err) {
+                return this.setState({ loggedIn: false });
+            }
+            this.setState({ loggedIn: true });
+        });
     }
 
     onUsernameChange(event) {
@@ -34,20 +44,29 @@ class Login extends React.Component {
                 return this.setState({ error: err.message });
             }
             this.setState({ error: null });
-            this.props.history.push('/home');
+            this.props.history.push(`/home/${AuthControl.user}`);
         });
     }
 
     render() {
-        return (
-            <AuthView
-                action={'login'}
-                onLoginFormSubmit={this.onLoginFormSubmit}
-                onUsernameChange={this.onUsernameChange}
-                onPasswordChange={this.onPasswordChange}
-                error={this.state.error}
-            />
-        );
+        if (this.state.loggedIn === true) {
+            let pathname = this.props.location.state
+                ? this.props.location.state.from.pathname
+                : `/home/${AuthControl.user}`;
+            return <Redirect to={{ pathname }} />;
+        } else if (this.state.loggedIn === false) {
+            return (
+                <AuthView
+                    action={'login'}
+                    onLoginFormSubmit={this.onLoginFormSubmit}
+                    onUsernameChange={this.onUsernameChange}
+                    onPasswordChange={this.onPasswordChange}
+                    error={this.state.error}
+                />
+            );
+        } else {
+            return <div />;
+        }
     }
 }
 

@@ -54,7 +54,8 @@ class ApiGateway {
             method,
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            credentials: 'include'
         };
         if (this.token) options.headers['Authorization'] = `bearer ${this.token}`;
         if (data) options.body = JSON.stringify(data);

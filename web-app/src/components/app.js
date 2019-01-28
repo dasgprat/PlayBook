@@ -7,15 +7,18 @@ import ProtectedRoute from './auth/protected-route';
 import About from './about/about-control';
 
 class App extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
     render() {
         return (
             <Router>
                 <div>
                     <Route path="/login" component={Login} />
                     <Route path="/register" component={Register} />
-                    <Route path="/about" component={About}/>
-                    <ProtectedRoute path="/home" component={Home} />
-                    
+                    <Route path="/about" component={About} />
+                    <ProtectedRoute path="/home/:username" component={Home} />
                 </div>
             </Router>
         );

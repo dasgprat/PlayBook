@@ -91,7 +91,7 @@ const featuredPosts = [
   },
 ];
 
-const posts = [post1];
+const posts = [];
 
 const archives = [
   'Jan 2019'

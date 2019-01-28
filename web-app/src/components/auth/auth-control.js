@@ -29,6 +29,14 @@ class AuthController {
             return this.authenticate(user.username, user.password, cb);
         });
     }
+
+    verify(cb) {
+        api.get('/auth', err => {
+            if(err) cb(err);
+            this.isAuthenticated = true;
+            cb(null);
+        });
+    }
 }
 
 const controller = new AuthController();

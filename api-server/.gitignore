@@ -3,6 +3,9 @@ config/local*
 etc/secrets/*
 !etc/secrets/README.md
 
+# IDE
+**/.idea
+
 # Logs
 logs
 *.log

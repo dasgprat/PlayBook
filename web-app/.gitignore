@@ -1,6 +1,6 @@
 node_modules/
 dist/
 src/assets/config/local*.json
-
-# IDE
 **/.idea
+.DS_Store/
+*DS_Store/

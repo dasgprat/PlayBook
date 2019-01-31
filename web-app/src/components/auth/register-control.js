@@ -52,7 +52,7 @@ class RegisterController extends React.Component {
                 return this.setState({ error: err.message });
             }
             this.setState({ error: null });
-            this.props.history.push('/home');
+            this.props.history.push(`/home/${AuthControl.user}`);
         });
     }
 

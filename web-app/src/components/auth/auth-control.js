@@ -11,7 +11,7 @@ class AuthController {
         api.put('/auth', { username, password }, (err, res) => {
             if (err) return cb(err);
             this.isAuthenticated = true;
-            this.user = res.user;
+            this.user = res.content.user;
             return cb(null, res);
         });
     }

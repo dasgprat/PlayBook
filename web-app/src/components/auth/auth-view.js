@@ -29,7 +29,7 @@ function AuthView({
 }) {
     return (
         <div className={classes.loginRoot}>
-            <img src="/assets/PlayBook_New.jpg" className={classes.bgImage} />
+            <img src="/assets/Background.png" className={classes.bgImage} />
             <main className={classes.main}>
                 <CssBaseline />
                 <Paper className={classes.paper}>

@@ -14,7 +14,8 @@ class Header extends React.Component {
     }
 
     render() {
-        return <HeaderView onSearch={this.onSearch} />;
+        const { match } = this.props;
+        return <HeaderView match={match} onSearch={this.onSearch} />;
     }
 }
 

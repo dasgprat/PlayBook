@@ -17,6 +17,7 @@ class HomeView extends React.Component {
             <div className={classes.root}>
                 <CssBaseline />
                 <Header />
+                
             </div>
         );
     }

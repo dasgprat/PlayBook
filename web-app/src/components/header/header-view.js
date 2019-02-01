@@ -26,8 +26,8 @@ const SearchBar = ({ classes, onSubmit, handleChange }) => (
     </form>
 );
 
-const ProfileAvatar = ({ classes, image }) => (
-    <Link to="/profile">
+const ProfileAvatar = ({ classes, image, username }) => (
+    <Link to={`/profile/${username}`}>
         <Avatar className={classes.avatar} src={image || '/assets/no-avatar.png'}>
             User
         </Avatar>
@@ -56,11 +56,11 @@ class HeaderView extends React.Component {
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, match } = this.props;
         return (
             <div className={classes.header}>
                 <SearchBar classes={classes} handleChange={this.handleChange} onSubmit={this.onSearchSubmit} />
-                <ProfileAvatar classes={classes} />
+                <ProfileAvatar classes={classes} username={match.params.username} />
             </div>
         );
     }

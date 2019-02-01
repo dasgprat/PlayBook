@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import styles from './home-styles';
 import { CssBaseline } from '@material-ui/core';
 import Header from '../header/header-control';
+import Playlists from '../playlists/playlists-control';
 
 class HomeView extends React.Component {
     constructor(props) {
@@ -16,7 +17,10 @@ class HomeView extends React.Component {
         return (
             <div className={classes.root}>
                 <CssBaseline />
-                <Header />
+                <div>
+                    <Header />
+                    <Playlists />
+                </div>
                 
             </div>
         );

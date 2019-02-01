@@ -12,7 +12,57 @@ class User {
         this.contact = {
             email: props.contact !== undefined ? props.contact.email : undefined
         };
+        this.skills = {
+            interested: props.skills ? props.skills.interested || [] : [],
+            experienced: props.skills ? props.skills.experienced || [] : []
+        };
+        this.gender = props.gender || null;
+        this.image = props.image || null;
     }
+
+    addInterest(skill) {
+        this.skills.interested.push(skill);
+    }
+
+    addExperience(skill) {
+        this.skills.experienced.push(skill);
+    }
+
+    removeInterest(skill) {
+        this.skills.interested = this.skills.interested.filter(s => s !== skill);
+    }
+
+    removeExperience(skill) {
+        this.skills.experienced = this.skills.experienced.filter(s => s !== skill);
+    }
+}
+
+function addUserExperience(id, skill) {
+    return new Promise((resolve, reject) => {
+        db.findOneAndUpdate({ _id: id }, { $push: { 'skills.experienced': skill } })
+            .lean()
+            .exec((err, docs) => {
+                if (err) return reject(errors.translate(err, 'add user experience'));
+                if (!doc) {
+                    return resolve(undefined);
+                }
+                return resolve(new User(doc));
+            });
+    });
+}
+
+function addUserInterest(id, skill) {
+    return new Promise((resolve, reject) => {
+        db.findOneAndUpdate({ _id: id }, { $push: { 'skills.interested': skill } })
+            .lean()
+            .exec((err, docs) => {
+                if (err) return reject(errors.translate(err, 'add user experience'));
+                if (!doc) {
+                    return resolve(undefined);
+                }
+                return resolve(new User(doc));
+            });
+    });
 }
 
 function merge(user) {
@@ -34,7 +84,7 @@ function find(query) {
     if (query && query.id) {
         q._id = query.id;
     }
-    if(query && query.username) {
+    if (query && query.username) {
         q.username = query.username;
     }
     return new Promise((resolve, reject) => {
@@ -49,6 +99,34 @@ function find(query) {
                     return resolve(new User(docs[0]));
                 }
                 return resolve(docs.map(doc => new User(doc)));
+            });
+    });
+}
+
+function removeUserExperience(id, skill) {
+    return new Promise((resolve, reject) => {
+        db.findOneAndUpdate({ _id: id }, { $pull: { 'skills.experienced': skill } })
+            .lean()
+            .exec((err, docs) => {
+                if (err) return reject(errors.translate(err, 'add user experience'));
+                if (!doc) {
+                    return resolve(undefined);
+                }
+                return resolve(new User(doc));
+            });
+    });
+}
+
+function removeUserInterest(id, skill) {
+    return new Promise((resolve, reject) => {
+        db.findOneAndUpdate({ _id: id }, { $pull: { 'skills.interested': skill } })
+            .lean()
+            .exec((err, docs) => {
+                if (err) return reject(errors.translate(err, 'add user experience'));
+                if (!doc) {
+                    return resolve(undefined);
+                }
+                return resolve(new User(doc));
             });
     });
 }
@@ -75,5 +153,9 @@ module.exports = {
     User,
     merge,
     find,
-    remove
+    remove,
+    addUserInterest,
+    addUserExperience,
+    removeUserExperience,
+    removeUserInterest
 };

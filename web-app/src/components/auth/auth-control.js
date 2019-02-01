@@ -11,8 +11,7 @@ class AuthController {
         api.put('/auth', { username, password }, (err, res) => {
             if (err) return cb(err);
             this.isAuthenticated = true;
-            this.user = username;
-            api.setToken(res.content.token);
+            this.user = res.user;
             return cb(null, res);
         });
     }
@@ -36,7 +35,7 @@ class AuthController {
         api.get('/auth', (err, res) => {
             if(err) return cb(err);
             this.isAuthenticated = true;
-            this.user = res.username;
+            this.user = res.user;
             cb(null);
         });
     }

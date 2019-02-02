@@ -4,6 +4,17 @@ const passport = require('passport');
 
 const playlist = express.Router();
 
-playlist.get('/user/:username/playlist', passport.authenticate('jwt', { session: false }), handler.getPlaylist);
+playlist.post('/playlist/',
+    passport.authenticate('jwt', { session: false }),
+    handler.mergePlaylist);
+playlist.post('/playlist/:id',
+    passport.authenticate('jwt', { session: false }),
+    handler.mergePlaylist);
+playlist.get('/playlist/:id',
+    passport.authenticate('jwt', { session: false }),
+    handler.getPlaylist);
+playlist.get('/user/:username/playlist',
+    passport.authenticate('jwt', { session: false }),
+    handler.getPlaylists);
 
 module.exports = playlist;

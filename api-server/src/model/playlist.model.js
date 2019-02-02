@@ -7,7 +7,6 @@ class Playlist {
     constructor(props) {
         if (!props) props = {};
         this.id = props.id || props._id || uuid();
-        this.username = props.username;
         this.name = props.name;
         this.author = props.author;
         this.description = props.description;
@@ -18,26 +17,54 @@ class Playlist {
     }
 }
 
+function merge(playlist) {
+    return new Promise((resolve, reject) => {
+        db.findOneAndUpdate({ _id: playlist.id }, playlist, { upsert: true, new: true })
+            .lean()
+            .exec((err, doc) => {
+                if (err) return reject(errors.translate(err, 'save playlist'));
+                logger.trace(JSON.stringify(doc, null, 4));
+                if (!doc) {
+                    return resolve(undefined);
+                }
+                return resolve(new Playlist(doc));
+            });
+    });
+}
+
 function find(query) {
-    q = {};
     return new Promise((resolve, reject) => {
         db.find({
             $or: [
-                {_id: query.id},
-                {username: query.username},
-                {subscribedBy: query.username}
+                {author: query.author},
+                {subscribedBy: query.author}
             ]
         })
             .lean()
             .exec((err, docs) => {
-                if (err) return reject(errors.translate(err, 'retrieve playlist information'));
+                if (err) return reject(errors.translate(err, 'retrieve playlists'));
                 logger.trace(JSON.stringify(docs, null, 4));
                 return resolve(docs.map(doc => new Playlist(doc)));
             });
     });
 }
 
+function findById(query) {
+    logger.trace(`playlist id: ${query.id}`);
+    return new Promise((resolve, reject) => {
+        db.findOne({_id: query.id})
+            .lean()
+            .exec((err, doc) => {
+                if (err) return reject(errors.translate(err, 'retrieve playlist information'));
+                logger.trace('doc: ', JSON.stringify(doc, null, 4));
+                return resolve(new Playlist(doc));
+            });
+    });
+}
+
 module.exports = {
     Playlist,
-    find
+    find,
+    findById,
+    merge
 };

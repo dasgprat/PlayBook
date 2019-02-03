@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import {Redirect} from "react-router-dom";
+import api from "../api-gateway";
 
 const styles = theme => ({
     root: {
@@ -39,13 +40,19 @@ class PlaylistThumb extends React.Component {
         super(props);
         this.state = {
             redirectTo: "",
-            redirectToReferrer: false
+            redirectToReferrer: false,
+            renderDeleteOperation: false,
         };
         this.updateRedirectState = this.updateRedirectState.bind(this);
+        this.updateDeleteState = this.updateDeleteState.bind(this);
     }
 
     updateRedirectState(url) {
         this.setState({redirectTo: url, redirectToReferrer: true});
+    }
+
+    updateDeleteState(url) {
+        this.setState({redirectTo: url, renderDeleteOperation: true});
     }
 
     render() {
@@ -55,25 +62,39 @@ class PlaylistThumb extends React.Component {
             return <Redirect to={this.state.redirectTo}/>;
         }
 
+        if (this.state.renderDeleteOperation == true) {
+            api.get(this.state.redirectTo,(err, res) => {
+                if (err) {
+                    console.log('Error in deletePlaylist');                    
+                }
+                
+            });              
+           
+        }
+
         return (
             <Paper className={classes.root}>
                 <div className={classes.section1}>
                     <Grid container alignItems="center">
                         <Grid item container xs={12} justify="space-between" className={classes.subscribe}>
                             <Grid item>
-                                <Typography/>
+                                <div>
+                                    <Typography color="primary" variant ="subtitle1">
+                                        Public
+                                    </Typography>
+                                </div>
                             </Grid>
                             <Grid item>
-                                <Button variant="contained" color="primary" className={classes.action}>
-                                    Subscribe
+                                <Button variant="contained" color="primary" className={classes.action}
+                                        onClick={() => this.updateRedirectState(`/playlist/${playlist.id}`)}>
+                                    PLAY                                
                                 </Button>
                             </Grid>
                         </Grid>
                         <Grid item xs={12}>
-                            <Button color="primary" className={classes.heading}
-                                    onClick={() => this.updateRedirectState(`/playlist/${playlist.id}`)}>
-                                { playlist.name }
-                            </Button>
+                            <Typography variant="h3">
+                                { playlist.name}
+                            </Typography>
                         </Grid>
                         <Grid item xs={12}>
                             <Typography variant="subtitle1">
@@ -90,8 +111,9 @@ class PlaylistThumb extends React.Component {
                 </div>
                 <Divider />
                 <div className={classes.section3}>
-                    <Button color="secondary" className={classes.action}>
-                        Share
+                    <Button color="secondary" className={classes.action}
+                            onClick={() => this.updateDeleteState(`/playlist/${playlist.id}/delete`)}>
+                        Delete
                     </Button>
                 </div>
             </Paper>

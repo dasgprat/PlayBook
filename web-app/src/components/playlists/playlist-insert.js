@@ -106,6 +106,7 @@ class PlaylistForm extends React.Component {
         if (this.state.id) {
             this.getPlaylist(this.state.id, (err, res) => {
                 if (err) {
+                    console.log('Error in getPlaylist');
                     return this.setState({ playlist: null });
                 }
                 return this.setState({
@@ -122,6 +123,7 @@ class PlaylistForm extends React.Component {
         event.stopPropagation();
         event.preventDefault();
         let playlist = {
+            id:   this.state.id,
             name: this.state.name,
             author: AuthControl.user.username,
             categories: this.state.categories,
@@ -135,7 +137,7 @@ class PlaylistForm extends React.Component {
             url = `/playlist/${this.state.id}`;
         }
         api.post(url, playlist, (err, res) => {
-            if (err) console.log(err);
+            if (err) console.log(err);            
             console.log(JSON.stringify(res));
             this.setState({id: res.content.id, redirectToReferrer: true});
         });
@@ -174,6 +176,7 @@ class PlaylistForm extends React.Component {
                                 <Input
                                     id="description"
                                     name="description"
+                                    multiline
                                     value={this.state.description}
                                     onChange={this.onDescriptionChange}
                                 />

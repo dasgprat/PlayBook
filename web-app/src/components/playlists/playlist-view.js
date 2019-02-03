@@ -9,6 +9,7 @@ import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import api from "../api-gateway";
+import { TextField, InputAdornment, Avatar } from '@material-ui/core';
 
 const styles = theme => ({
     root: {
@@ -92,7 +93,7 @@ class Playlist extends React.Component {
 
         return (
             <div className={classes.root}>
-                <Grid container justify='center' spacing={32}>
+                <Grid container justify='center' spacing={32}>                    
                     <Grid key={playlist.id} className={classes.demo}>
                         <Paper className={classes.content}>
                             <div className={classes.section1}>
@@ -149,7 +150,7 @@ class Playlist extends React.Component {
                             <Divider />
                             <div className={classes.last}>
                                 <Button color="secondary" className={classes.action}>
-                                    Share
+                                    Delete
                                 </Button>
                             </div>
                         </Paper>

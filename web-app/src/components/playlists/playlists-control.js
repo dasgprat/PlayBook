@@ -7,11 +7,17 @@ import Grid from '@material-ui/core/Grid';
 import api from "../api-gateway";
 import AuthControl from '../auth/auth-control';
 import Button from '@material-ui/core/Button';
+import GridList from '@material-ui/core/GridList';
+
 
 const styles = theme => ({
     root: {
         flexGrow: 1,
         margin: theme.spacing.unit * 2,
+        //flexWrap: 'wrap',
+        //overflow: 'hidden',
+        //display: 'flex',
+        
     },
     control: {
         padding: theme.spacing.unit * 2,
@@ -19,6 +25,11 @@ const styles = theme => ({
     create: {
         margin: theme.spacing.unit,
     },
+    gridList: {
+        flexWrap: 'nowrap',        
+        height: 369,        
+        transform: 'translateZ(0)',
+    }
 });
 
 class PlaylistsController extends React.Component {
@@ -54,14 +65,13 @@ class PlaylistsController extends React.Component {
 
     render() {
         const { classes } = this.props;
-        console.log('username: ', AuthControl.user);
-
         if (this.state.redirectToReferrer === true) {
             return <Redirect to={`/playlist`}/>;
         }
 
         return (
             <div className={classes.root}>
+                
                 <Grid container justify='center' alignItems="center" spacing={0}>
                     <Grid item xs={false}>
                         <Button variant="contained" color="primary" className={classes.create}
@@ -70,9 +80,10 @@ class PlaylistsController extends React.Component {
                         </Button>
                     </Grid>
                 </Grid>
-                <Grid container justify='center' spacing={32}>
+                
+                <Grid container className={classes.root}  spacing={32}>
                     {this.state.playlists.map(playlist => (
-                        <Grid key={playlist.id} className={classes.demo} item xs={3}>
+                        <Grid key={playlist.id} className={classes.demo} >
                             <PlaylistThumb playlist={playlist} />
                         </Grid>
                     ))}

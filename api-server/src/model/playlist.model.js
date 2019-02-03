@@ -62,9 +62,22 @@ function findById(query) {
     });
 }
 
+function delete_new(playlist) {
+    db.remove({ _id: playlist.id },{ justOne: true})
+            .lean()
+            .exec((err, doc) => {
+                if (err) return reject(errors.translate(err, 'delete playlist'));
+                logger.trace(JSON.stringify(doc, null, 4));                
+                return resolve(doc);
+            });
+}
+
+
 module.exports = {
     Playlist,
     find,
     findById,
-    merge
+    merge,
+    delete_new
+    
 };

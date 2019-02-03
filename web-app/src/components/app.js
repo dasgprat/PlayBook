@@ -27,6 +27,7 @@ class App extends React.Component {
                     <ProtectedRoute exact path="/playlist" component={PlaylistInsert} />
                     <ProtectedRoute exact path="/playlist/:id/edit" component={PlaylistInsert} />
                     <ProtectedRoute path="/playlist/:id" component={Playlist} />
+                    <ProtectedRoute path="/playlist/:id/delete" component={Playlist} />
                     <ProtectedRoute path="/home/:username" component={Home} />
                     <Redirect to={{ pathname: '/login' }} />
                 </Switch>

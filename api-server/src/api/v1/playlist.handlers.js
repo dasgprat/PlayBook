@@ -4,10 +4,27 @@ const status = require('http-status');
 const logger = require('winstonson')(module);
 
 module.exports = {
+    addPlaylist,
+    deletePlaylist,
     mergePlaylist,
     getPlaylists,
     getPlaylist
 };
+
+async function addPlaylist(req, res) {
+    try {
+        if(!req.body.name || !req.body.description || !req.body.author){
+            return response.sendErrorResponse(res, status.BAD_REQUEST, 'Missing name or description or author');
+        }
+        logger.trace(JSON.stringify(req.body));
+        let playlist = await Playlist.merge(new Playlist.Playlist(req.body));
+        return response.sendActionResponse(res, status.CREATED, 'Successfully added new playlist', playlist);
+    } catch (err) {
+        logger.error(err);
+        return response.sendErrorResponse(res, err, 'add new playlist');
+    }
+}
+
 
 async function mergePlaylist(req, res) {
     try {
@@ -16,7 +33,7 @@ async function mergePlaylist(req, res) {
         }
         logger.trace(JSON.stringify(req.body));
         let playlist = await Playlist.merge(new Playlist.Playlist(req.body));
-        return response.sendActionResponse(res, status.CREATED, 'Successfully created new playlist', playlist);
+        return response.sendActionResponse(res, status.CREATED, 'Successfully edited new playlist', playlist);
     } catch (err) {
         logger.error(err);
         return response.sendErrorResponse(res, err, 'add new playlist');
@@ -36,11 +53,23 @@ async function getPlaylists(req, res) {
 
 async function getPlaylist(req, res) {
     try {
-        logger.trace(`Retrieving playlist for ${req.params.id}`);
+        logger.trace(`Retrieving playlist for ${req.params.id}`);        
         let playlist = await Playlist.findById({ id: req.params.id });
         return response.sendQueryResponse(res, status.OK, playlist);
     } catch (err) {
         logger.error(err);
         return response.sendErrorResponse(res, err, 'retrieve playlist');
+    }
+}
+
+async function deletePlaylist(req, res) {
+    try {        
+        logger.trace(JSON.stringify(req.params.id));
+        let tmp = await Playlist.delete_new(req.params.id);
+        return response.sendQueryResponse(res, status.OK, 'Successfully deleted playlist');
+    } catch (err) {
+        console.log("inside");    
+        logger.error(err);
+        return response.sendErrorResponse(res, err, 'delete playlist');
     }
 }

@@ -5,9 +5,13 @@ import styles from './header-styles';
 import { TextField, InputAdornment, Avatar } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import { Link } from 'react-router-dom';
+import Typography from '@material-ui/core/Typography';
+
+
+
 
 const SearchBar = ({ classes, onSubmit, handleChange }) => (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit}>        
         <TextField
             className={classes.searchBar}
             id="searchInput"
@@ -19,11 +23,19 @@ const SearchBar = ({ classes, onSubmit, handleChange }) => (
                     </InputAdornment>
                 ),
                 disableUnderline: true,
-                className: classes.searchInput
+                className: classes.searchInput,
+                placeholder:"Search Playlists"
             }}
             onChange={handleChange}
         />
     </form>
+);
+
+const LogoText = ({classes}) => (    
+    <Typography className={classes.typography} variant="h4" color="inherit">
+        Playbook
+    </Typography>
+    
 );
 
 const ProfileAvatar = ({ classes, image, username }) => (
@@ -58,7 +70,8 @@ class HeaderView extends React.Component {
     render() {
         const { classes, match } = this.props;
         return (
-            <div className={classes.header}>
+            <div className={classes.header}>                                
+                <LogoText classes ={classes} />
                 <SearchBar classes={classes} handleChange={this.handleChange} onSubmit={this.onSearchSubmit} />
                 <ProfileAvatar classes={classes} username={match.params.username} />
             </div>

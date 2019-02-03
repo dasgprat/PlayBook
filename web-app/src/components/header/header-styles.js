@@ -12,20 +12,25 @@ export default theme => ({
             justifyContent: 'center',
         }
     },
+    typography:{
+        position:'absolute',
+        left: '0',
+        marginLeft: 10
+    },
     searchBar: {
         borderRadius: 15,
         backgroundColor: 'white',
         padding: 4,
         width: 240,
         [theme.breakpoints.up('sm')]: {
-            width: 400
+            width: 300
         },
         [theme.breakpoints.up('md')]: {
             width: 500,
         },
     },
     searchInput: {
-        marginLeft: 13,
+        marginLeft:theme.spacing.unit * 1.3,
         fontSize: 20
     },
     avatar: {

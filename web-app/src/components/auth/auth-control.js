@@ -26,14 +26,22 @@ class AuthController {
             password: form.password
         };
         api.post('/users', user, (err, res) => {
-            if (err) return cb(err);
+            if (err) {
+                if (err.status === 409) {
+                    // CONFLICT - user already exists
+                    err.message = 'User with the provided username already exists';
+                    return cb(err);
+                } else {
+                    return cb(err);
+                }
+            }
             return this.authenticate(user.username, user.password, cb);
         });
     }
 
     verify(cb) {
         api.get('/auth', (err, res) => {
-            if(err) return cb(err);
+            if (err) return cb(err);
             this.isAuthenticated = true;
             this.user = res.user;
             cb(null);

@@ -25,7 +25,7 @@ export default theme => ({
         left: 0,
         width: '100vw',
         display: 'flex',
-        flexDirection: 'row-reverse',
+        flexDirection: 'row',
         alignItems: 'center',
         zIndex: 999
     },

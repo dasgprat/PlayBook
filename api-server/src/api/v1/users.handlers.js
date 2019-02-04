@@ -43,7 +43,7 @@ async function addNewUser(req, res) {
         logger.trace('Verifying user does not already exist');
         let user = await UserModel.find({ username: req.body.username });
         if (user !== undefined) {
-            return response.sendActionResponse(res, status.OK, 'User already exists', user);
+            return response.sendActionResponse(res, status.CONFLICT, 'User already exists', user);
         }
         logger.trace('Adding new user with username ' + req.body.username);
         user = await UserModel.merge(new UserModel.User(req.body));

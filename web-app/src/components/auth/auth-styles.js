@@ -7,7 +7,8 @@ export default function styles(theme) {
             position: 'fixed',
             top: 0,
             left: 0,
-            zIndex: -1
+            zIndex: -1,
+            overflowY: 'auto'
         },
         bgImage: {
             height: '100vh',

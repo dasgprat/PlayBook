@@ -22,7 +22,7 @@ class App extends React.Component {
                     <Route path="/login" component={Login} />
                     <Route path="/register" component={Register} />
                     <Route path="/about" component={About} />
-                    <Route path="/profile/:username" component={Profile} />
+                    <ProtectedRoute path="/profile/:username" component={Profile} />
                     <ProtectedRoute path="/playlists/:username" component={Playlists} />
                     <ProtectedRoute exact path="/playlist" component={PlaylistInsert} />
                     <ProtectedRoute exact path="/playlist/:id/edit" component={PlaylistInsert} />

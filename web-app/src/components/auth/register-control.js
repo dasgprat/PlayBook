@@ -1,7 +1,7 @@
 import React from 'react';
 import AuthView from './auth-view';
 import AuthControl from './auth-control';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Redirect } from 'react-router-dom';
 
 class RegisterController extends React.Component {
     constructor(props) {
@@ -13,7 +13,8 @@ class RegisterController extends React.Component {
             age: null,
             username: '',
             password: '',
-            error: null
+            error: null,
+            loggedIn: null
         };
 
         this.onNameChange = this.onNameChange.bind(this);
@@ -22,6 +23,15 @@ class RegisterController extends React.Component {
         this.onPasswordChange = this.onPasswordChange.bind(this);
         this.onLoginFormSubmit = this.onLoginFormSubmit.bind(this);
         this.onAgeChange = this.onAgeChange.bind(this);
+    }
+
+    componentDidMount() {
+        AuthControl.verify(err => {
+            if (err) {
+                return this.setState({ loggedIn: false });
+            }
+            this.setState({ loggedIn: true });
+        });
     }
 
     onNameChange(event) {
@@ -57,18 +67,28 @@ class RegisterController extends React.Component {
     }
 
     render() {
-        return (
-            <AuthView
-                action="register"
-                onLoginFormSubmit={this.onLoginFormSubmit}
-                onNameChange={this.onNameChange}
-                onEmailChange={this.onEmailChange}
-                onAgeChange={this.onAgeChange}
-                onUsernameChange={this.onUsernameChange}
-                onPasswordChange={this.onPasswordChange}
-                error={this.state.error}
-            />
-        );
+        if (this.state.loggedIn === true) {
+            let pathname = this.props.location.state
+                ? this.props.location.state.from.pathname
+                : `/home/${AuthControl.user.username}`;
+            return <Redirect to={{ pathname }} />;
+        } else if (this.state.loggedIn === false) {
+            return (
+                <AuthView
+                    action="register"
+                    onLoginFormSubmit={this.onLoginFormSubmit}
+                    onNameChange={this.onNameChange}
+                    onEmailChange={this.onEmailChange}
+                    onAgeChange={this.onAgeChange}
+                    onUsernameChange={this.onUsernameChange}
+                    onPasswordChange={this.onPasswordChange}
+                    error={this.state.error}
+                />
+            );
+        } else {
+            return <div />;
+        }
+        
     }
 }
 

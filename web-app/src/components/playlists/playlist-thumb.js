@@ -42,6 +42,7 @@ class PlaylistThumb extends React.Component {
             redirectTo: "",
             redirectToReferrer: false,
             renderDeleteOperation: false,
+            playlist_creator: ""
         };
         this.updateRedirectState = this.updateRedirectState.bind(this);
         this.updateDeleteState = this.updateDeleteState.bind(this);
@@ -51,8 +52,16 @@ class PlaylistThumb extends React.Component {
         this.setState({redirectTo: url, redirectToReferrer: true});
     }
 
-    updateDeleteState(url) {
-        this.setState({redirectTo: url, renderDeleteOperation: true});
+    updateDeleteState(url,playlistAuthor) {
+        this.setState({redirectTo: url, renderDeleteOperation: true, playlist_creator: playlistAuthor});
+    }
+
+    deletePlaylists(url, callback) {
+        //api.get(`/user/${username}/playlist`, callback);
+        // api.get(`/user/${username}/playlist/5c523fde15bf407420799e69`, callback);
+        api.delete(url,callback);
+        
+        
     }
 
     render() {
@@ -62,15 +71,16 @@ class PlaylistThumb extends React.Component {
             return <Redirect to={this.state.redirectTo}/>;
         }
 
-        if (this.state.renderDeleteOperation == true) {
-            api.get(this.state.redirectTo,(err, res) => {
-                if (err) {
-                    console.log('Error in deletePlaylist');                    
+        if (this.state.renderDeleteOperation == true) {                        
+            this.deletePlaylists(this.state.redirectTo, (err, res) => {
+                 
+                if (err) {                                       
+                    return this.setState({redirectToReferrer: false,renderDeleteOperation: false});
                 }
-                
-            });              
-           
-        }
+                /* Some Code Stub Required For Validation */                
+            });
+
+        }   
 
         return (
             <Paper className={classes.root}>
@@ -112,8 +122,8 @@ class PlaylistThumb extends React.Component {
                 <Divider />
                 <div className={classes.section3}>
                     <Button color="secondary" className={classes.action}
-                            onClick={() => this.updateDeleteState(`/playlist/${playlist.id}/delete`)}>
-                        Delete
+                            onClick={() => this.updateDeleteState(`/playlist/${playlist.id}`,`${playlist.author}`)}>
+                        Delete                        
                     </Button>
                 </div>
             </Paper>

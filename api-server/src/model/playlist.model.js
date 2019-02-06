@@ -62,14 +62,16 @@ function findById(query) {
     });
 }
 
-function delete_new(playlist) {
-    db.remove({ _id: playlist.id },{ justOne: true})
+function deletePlaylistUser(query) {    
+    return new Promise((resolve,reject) => {
+       db.remove({ _id: query.id })
             .lean()
-            .exec((err, doc) => {
-                if (err) return reject(errors.translate(err, 'delete playlist'));
-                logger.trace(JSON.stringify(doc, null, 4));                
-                return resolve(doc);
+            .exec((err, res) => {
+                if (err) return reject(errors.translate(err, 'delete playlist'));                
+                logger.trace(JSON.stringify(res, null, 4));                
+                return resolve(JSON.stringify(res,null,4));
             });
+    });
 }
 
 
@@ -78,6 +80,6 @@ module.exports = {
     find,
     findById,
     merge,
-    delete_new
+    deletePlaylistUser
     
 };

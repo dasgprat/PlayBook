@@ -63,12 +63,10 @@ async function getPlaylist(req, res) {
 }
 
 async function deletePlaylist(req, res) {
-    try {        
-        logger.trace(JSON.stringify(req.params.id));
-        let tmp = await Playlist.delete_new(req.params.id);
-        return response.sendQueryResponse(res, status.OK, 'Successfully deleted playlist');
-    } catch (err) {
-        console.log("inside");    
+    try {
+        let tmp = await Playlist.deletePlaylistUser({id: req.params.id});
+        return response.sendQueryResponse(res, status.OK,tmp);
+    } catch (err) {           
         logger.error(err);
         return response.sendErrorResponse(res, err, 'delete playlist');
     }

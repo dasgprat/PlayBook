@@ -12,7 +12,7 @@ playlist.post('/playlist/:id',
     passport.authenticate('jwt', { session: false }),
     handler.mergePlaylist);
 
-playlist.get('/playlist/:id/delete',
+playlist.delete('/playlist/:id',
     passport.authenticate('jwt', {session: false}),
     handler.deletePlaylist);            
 

@@ -90,7 +90,7 @@ class PlaylistForm extends React.Component {
     }
 
     filterCategories(input) {
-        const exactOption = this.categoryOptions.filter(i => i.label.toLowerCase() === input.toLowerCase());
+        const exactOption = this.state.categoryOptions.filter(i => i.label.toLowerCase() === input.toLowerCase());
         let filterOptions = [];
         if (exactOption.length == 0 && input.trim().length > 0) {
             filterOptions.push({value: input, label: input});
@@ -143,6 +143,12 @@ class PlaylistForm extends React.Component {
                 return this.setState({
                     name: res.name,
                     categories: res.categories.map(category => {
+                        return {
+                            value: category.name,
+                            label: category.name
+                        }
+                    }),
+                    categoryOptions: res.categories.map(category => {
                         return {
                             value: category.name,
                             label: category.name

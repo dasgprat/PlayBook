@@ -92,7 +92,7 @@ class PlaylistThumb extends React.Component {
                             <Grid item>
                                 <div>
                                     <Typography color="primary" variant ="subtitle1">
-                                        Public
+                                        Private
                                     </Typography>
                                 </div>
                             </Grid>

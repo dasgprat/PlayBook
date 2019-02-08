@@ -131,7 +131,7 @@ class Playlist extends React.Component {
                                         </Grid>
                                         <Grid item>
                                             <Button variant="contained" color="primary" className={classes.action}>
-                                                Subscribe
+                                                Share
                                             </Button>
                                         </Grid>
                                     </Grid>

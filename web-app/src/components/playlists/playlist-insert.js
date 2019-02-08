@@ -164,6 +164,12 @@ class PlaylistForm extends React.Component {
                             label: category.name
                         }
                     }),
+                    categoryOptions: res.categories.map(category => {
+                        return {
+                            value: category.name,
+                            label: category.name
+                        }
+                    }),
                     description: res.description,
                     links: res.links.length > 0 ? res.links.join('\n') : "",
                 });

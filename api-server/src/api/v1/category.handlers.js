@@ -25,7 +25,7 @@ async function mergeCategory(req, res) {
 async function getCategories(req, res) {
     try {
         logger.trace(`Retrieving categories for ${req.params.name}`);
-        let categories = await Category.find({ author: req.params.name });
+        let categories = await Category.find({ name: req.params.name });
         return response.sendQueryResponse(res, status.OK, categories);
     } catch (err) {
         logger.error(err);

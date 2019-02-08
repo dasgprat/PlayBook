@@ -126,7 +126,7 @@ class Playlist extends React.Component {
                             <Divider />
                             <div className={classes.section2}>
                                 { playlist.categories.map(category => (
-                                    <Chip label={category} className={classes.chip} variant="outlined" />
+                                    <Chip key={category.name} label={category.name} className={classes.chip} variant="outlined" />
                                 ))}
                             </div>
                             <Divider />
@@ -139,7 +139,7 @@ class Playlist extends React.Component {
                             <div className={classes.section4}>
                                 <Grid container direction="column">
                                     {playlist.links.map(link => (
-                                        <Grid key={playlist.id} item xs={3}>
+                                        <Grid key={link} item xs={3}>
                                             <a href={link}>
                                                 { link }
                                             </a>

@@ -222,7 +222,7 @@ class PlaylistForm extends React.Component {
                     <Paper className={classes.paper}>
                         <form className={classes.form} onSubmit={this.onFormSubmit}>
                             <FormControl margin="normal" required fullWidth>
-                                <InputLabel htmlFor="name">Name</InputLabel>
+                                <InputLabel htmlFor="name">Playlist Name</InputLabel>
                                 <Input
                                     id="name"
                                     name="name"
@@ -254,6 +254,7 @@ class PlaylistForm extends React.Component {
                                     id="links" name="links"
                                     label="Links"
                                     multiline
+                                    placeholder="Add more links by pressing enter"
                                     value={this.state.links}
                                     onChange={this.onLinksChange} />
                             </FormControl>

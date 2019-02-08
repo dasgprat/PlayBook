@@ -1,6 +1,8 @@
 {
     "api": {
         "version": "v1",
-        "host": "localhost:8484"
+        "host": "prateekdasgupta.me",
+        "protocol":"https" 
+
     }
 }

@@ -11,6 +11,7 @@ import api from "../api-gateway";
 import FormControl from '@material-ui/core/FormControl';
 import SelectView from "../custom/select-view";
 import TextField from '@material-ui/core/TextField';
+import { Link } from 'react-router-dom';
 
 const styles = theme => {
     return {
@@ -59,6 +60,21 @@ const styles = theme => {
         form: { width: '100%', marginTop: theme.spacing.unit },
         submit: { marginTop: theme.spacing.unit * 3 },
         register: { paddingTop: theme.spacing.unit * 2 },
+        header: {
+            backgroundColor: theme.palette.primary.light,
+            height: 50,
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            zIndex: 999
+        },
+        spacer: {
+            height: 50
+        },
     }; // Fix IE 11 issue.
 };
 
@@ -90,7 +106,7 @@ class PlaylistForm extends React.Component {
     }
 
     filterCategories(input) {
-        const exactOption = this.categoryOptions.filter(i => i.label.toLowerCase() === input.toLowerCase());
+        const exactOption = this.state.categoryOptions.filter(i => i.label.toLowerCase() === input.toLowerCase());
         let filterOptions = [];
         if (exactOption.length == 0 && input.trim().length > 0) {
             filterOptions.push({value: input, label: input});
@@ -191,6 +207,11 @@ class PlaylistForm extends React.Component {
 
         return (
             <div className={classes.root}>
+                <div className={classes.header}>
+                    <Link to={`/home/${AuthControl.user.username}`} className={classes.link}>
+                        <Button>Home</Button>
+                    </Link>
+                </div>
                 <main className={classes.main}>
                     <Paper className={classes.paper}>
                         <form className={classes.form} onSubmit={this.onFormSubmit}>

@@ -10,6 +10,7 @@ import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import api from "../api-gateway";
 import { TextField, InputAdornment, Avatar } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 
 const styles = theme => ({
     root: {
@@ -43,6 +44,21 @@ const styles = theme => ({
     },
     action: {
         margin: theme.spacing.unit
+    },
+    header: {
+        backgroundColor: theme.palette.primary.light,
+        height: 50,
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        zIndex: 999
+    },
+    spacer: {
+        height: 50
     },
 });
 
@@ -92,9 +108,17 @@ class Playlist extends React.Component {
         }
 
         return (
-            <div className={classes.root}>
-                <Grid container justify='center' spacing={32}>                    
-                    <Grid key={playlist.id} className={classes.demo}>
+            
+            <Grid container className={classes.root} direction="column" spacing={8}>
+                <div className={classes.header}>
+                    <Link to={`/home/${playlist.author}`} className={classes.link}>
+                        <Button>Home</Button>
+                    </Link>
+                </div> 
+                <div className={classes.spacer} />             
+                <Grid container justify='center' spacing={32}>                                       
+                    <div>
+                        <Grid key={playlist.id} className={classes.demo}>
                         <Paper className={classes.content}>
                             <div className={classes.section1}>
                                 <Grid container alignItems="center">
@@ -147,16 +171,12 @@ class Playlist extends React.Component {
                                     ))}
                                 </Grid>
                             </div>
-                            <Divider />
-                            <div className={classes.last}>
-                                <Button color="secondary" className={classes.action}>
-                                    Delete
-                                </Button>
-                            </div>
+                            <Divider />                            
                         </Paper>
                     </Grid>
-                </Grid>
-            </div>
+                    </div>
+                </Grid>            
+            </Grid>           
         );
     }
 }

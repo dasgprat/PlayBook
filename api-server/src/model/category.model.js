@@ -37,7 +37,7 @@ function find(query) {
             .lean()
             .exec((err, docs) => {
                 if (err) return reject(errors.translate(err, 'retrieve categories'));
-                logger.trace(JSON.stringify(categories, null, 4));
+                logger.trace(JSON.stringify(docs, null, 4));
                 return resolve(docs.map(doc => new Category(doc)));
             });
     });

@@ -4,7 +4,6 @@ const passport = require('passport');
 
 const category = express.Router();
 
-category.post('/categories/', passport.authenticate('jwt', { session: false }), handler.mergeCategory);
-category.get('/categories/', passport.authenticate('jwt', { session: false }), handler.getCategories);
+category.get('/categories/:name', passport.authenticate('jwt', { session: false }), handler.getCategories);
 
 module.exports = category;

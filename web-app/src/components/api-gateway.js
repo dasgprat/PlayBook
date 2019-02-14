@@ -11,7 +11,7 @@ class ApiGateway {
         config.load(errs => {
             if (errs) console.log(errs);
             this.initialized = true;
-            this.baseUrl = `http://${config.get('api.host')}/api/${config.get('api.version')}`;
+            this.baseUrl = `${config.get('api.protocol')}://${config.get('api.host')}/api/${config.get('api.version')}`;
             cb(errs);
         });
     }

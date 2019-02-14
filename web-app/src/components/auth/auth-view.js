@@ -105,11 +105,17 @@ function AuthView({
                                 <Typography>
                                     Don't have an account? <Link to="/register">Register</Link>
                                 </Typography>
+                                <Typography>
+                                    Know more about Playbook <Link to="/about">here</Link>
+                                </Typography>
                             </div>
                         ) : (
                             <div className={classes.register}>
                                 <Typography>
                                     Already have an account? <Link to="/login">Sign in</Link>
+                                </Typography>
+                                <Typography>
+                                    Know more about Playbook <Link to="/about">here</Link>
                                 </Typography>
                             </div>
                         )}

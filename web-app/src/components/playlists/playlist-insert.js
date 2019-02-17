@@ -11,7 +11,10 @@ import api from "../api-gateway";
 import FormControl from '@material-ui/core/FormControl';
 import SelectView from "../custom/select-view";
 import TextField from '@material-ui/core/TextField';
-import { Link } from 'react-router-dom';
+import Header from '../header/header-control';
+import { CssBaseline } from '@material-ui/core';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 const styles = theme => {
     return {
@@ -59,22 +62,7 @@ const styles = theme => {
         avatar: { margin: theme.spacing.unit, backgroundColor: theme.palette.secondary.main },
         form: { width: '100%', marginTop: theme.spacing.unit },
         submit: { marginTop: theme.spacing.unit * 3 },
-        register: { paddingTop: theme.spacing.unit * 2 },
-        header: {
-            backgroundColor: theme.palette.primary.light,
-            height: 50,
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            zIndex: 999
-        },
-        spacer: {
-            height: 50
-        },
+        register: { paddingTop: theme.spacing.unit * 2 },        
     }; // Fix IE 11 issue.
 };
 
@@ -90,7 +78,8 @@ class PlaylistForm extends React.Component {
             description: "",
             links: "",
             redirectToReferrer: false,
-            categoryOptions: []
+            categoryOptions: [],
+            personal: false,
         };
 
         this.onNameChange = this.onNameChange.bind(this);
@@ -99,6 +88,7 @@ class PlaylistForm extends React.Component {
         this.onDescriptionChange = this.onDescriptionChange.bind(this);
         this.onLinksChange = this.onLinksChange.bind(this);
         this.onFormSubmit = this.onFormSubmit.bind(this);
+        this.onPrivacyChange = this.onPrivacyChange.bind(this);
     }
 
     onNameChange(event) {
@@ -144,6 +134,10 @@ class PlaylistForm extends React.Component {
         this.setState({ description: event.target.value });
     }
 
+    onPrivacyChange(event) {
+        this.setState({personal: event.target.checked});
+    }
+
     getPlaylist(id, callback) {
         console.log(`insert: /playlist/${id}`);
         api.get(`/playlist/${id}`, callback);
@@ -172,6 +166,7 @@ class PlaylistForm extends React.Component {
                     }),
                     description: res.description,
                     links: res.links.length > 0 ? res.links.join('\n') : "",
+                    personal: res.personal
                 });
             });
         }
@@ -192,7 +187,7 @@ class PlaylistForm extends React.Component {
             }),
             description: this.state.description,
             links: this.state.links.length > 0 ? this.state.links.split('\n') : [],
-            personal: false,
+            personal: this.state.personal,
             subscribedBy: []
         };
         let url = "/playlist";
@@ -205,18 +200,17 @@ class PlaylistForm extends React.Component {
 
     render() {
         const { classes } = this.props;
-
         const redirectToReferrer = this.state.redirectToReferrer;
+
         if (redirectToReferrer === true) {
             return <Redirect to={`/playlist/${this.state.id}`}/>;
         }
 
         return (
-            <div className={classes.root}>
-                <div className={classes.header}>
-                    <Link to={`/home/${AuthControl.user.username}`} className={classes.link}>
-                        <Button>Home</Button>
-                    </Link>
+            <div className={classes.root}>                
+                <CssBaseline />
+                <div>
+                    <Header/>                
                 </div>
                 <main className={classes.main}>
                     <Paper className={classes.paper}>
@@ -230,6 +224,17 @@ class PlaylistForm extends React.Component {
                                     onChange={this.onNameChange}
                                 />
                             </FormControl>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={this.state.personal}
+                                        onChange={this.onPrivacyChange}
+                                        value={'${this.state.personal}'}
+                                        color="primary"
+                                    />
+                                }
+                                label="Private"
+                            />
                             <FormControl margin="normal" required fullWidth>
                                 <InputLabel htmlFor="categories">Categories</InputLabel>
                                 <SelectView

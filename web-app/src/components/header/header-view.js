@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import AuthControl from '../auth/auth-control';
 import styles from './header-styles';
 import {
     TextField,
@@ -10,6 +11,7 @@ import {
     Popper,
     Grow,
     Paper,
+    Button,
     ClickAwayListener,
     MenuList,
     IconButton
@@ -39,11 +41,7 @@ const SearchBar = ({ classes, onSubmit, handleChange }) => (
     </form>
 );
 
-const LogoText = ({ classes }) => (
-    <Typography className={classes.typography} variant="h4" color="inherit">
-        Playbook
-    </Typography>
-);
+
 
 class HeaderView extends React.Component {
     constructor(props) {
@@ -85,7 +83,11 @@ class HeaderView extends React.Component {
         const { classes, match, image, onLogout } = this.props;
         return (
             <div className={classes.header}>
-                <LogoText classes={classes} />
+                <div className={classes.logoIcon}>
+                    <Link to={`/home/${AuthControl.user.username}`} className={classes.link}>
+                        <Button>PlayBook</Button>                 
+                    </Link> 
+                </div>               
                 <SearchBar classes={classes} handleChange={this.handleChange} onSubmit={this.onSearchSubmit} />
                 <div className={classes.profileAvatarWrapper}>
                     <IconButton
@@ -110,7 +112,7 @@ class HeaderView extends React.Component {
                                 <Paper>
                                     <ClickAwayListener onClickAway={this.onProfileMenuClose}>
                                         <MenuList>
-                                            <Link className={classes.link} to={`/profile/${match.params.username}`}>
+                                            <Link className={classes.link} to={`/profile/${AuthControl.user.username}`}>
                                                 <MenuItem onClick={this.onProfileMenuClose}>Profile</MenuItem>
                                             </Link>
                                             <MenuItem onClick={onLogout}>Logout</MenuItem>

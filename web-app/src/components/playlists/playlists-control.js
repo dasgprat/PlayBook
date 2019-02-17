@@ -8,6 +8,7 @@ import api from "../api-gateway";
 import AuthControl from '../auth/auth-control';
 import Button from '@material-ui/core/Button';
 import GridList from '@material-ui/core/GridList';
+import Typography from '@material-ui/core/Typography';
 
 
 const styles = theme => ({
@@ -71,13 +72,12 @@ class PlaylistsController extends React.Component {
 
         return (
             <div className={classes.root}>
-                
                 <Grid container justify='center' alignItems="center" spacing={0}>
                     <Grid item xs={false}>
                         <Button variant="contained" color="primary" className={classes.create}
                                 onClick={() => this.updateRedirectState()}>
                             Create Playlist
-                        </Button>
+                        </Button>                        
                     </Grid>
                 </Grid>
                 
@@ -87,7 +87,8 @@ class PlaylistsController extends React.Component {
                             <PlaylistThumb playlist={playlist} />
                         </Grid>
                     ))}
-                </Grid>
+                </Grid>                
+                
             </div>
         );
     }

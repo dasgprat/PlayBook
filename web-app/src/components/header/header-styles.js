@@ -2,7 +2,7 @@ export default theme => ({
     header: {
         padding: 20,
         backgroundColor: theme.palette.primary.light,
-        marginTop: 20,
+        marginTop: 0,
         alignItems: 'center',
         width: '100vw',
         height: 90,
@@ -12,7 +12,7 @@ export default theme => ({
             justifyContent: 'center'
         }
     },
-    typography: {
+    logoIcon: {
         position: 'absolute',
         left: '0',
         marginLeft: 10
@@ -23,7 +23,7 @@ export default theme => ({
         padding: 4,
         width: 240,
         [theme.breakpoints.up('sm')]: {
-            width: 300
+            width: 200
         },
         [theme.breakpoints.up('md')]: {
             width: 500

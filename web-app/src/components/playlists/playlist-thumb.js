@@ -8,12 +8,14 @@ import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import {Redirect} from "react-router-dom";
 import api from "../api-gateway";
+import Icon from '@material-ui/core/Icon';
 
 const styles = theme => ({
     root: {
         width: '100%',
         maxWidth: 360,
         backgroundColor: theme.palette.background.paper,
+        margin: theme.spacing.unit,
     },
     heading: {
         padding: 0,
@@ -32,6 +34,9 @@ const styles = theme => ({
     },
     action: {
         margin: theme.spacing.unit,
+    },
+    rightIcon: {
+        marginLeft: theme.spacing.unit,
     },
 });
 
@@ -90,14 +95,14 @@ class PlaylistThumb extends React.Component {
                             <Grid item>
                                 <div>
                                     <Typography color="primary" variant ="subtitle1">
-                                        Private
+                                        {playlist.personal==true ? "Private" : "Public"}
                                     </Typography>
                                 </div>
                             </Grid>
                             <Grid item>
                                 <Button variant="contained" color="primary" className={classes.action}
-                                        onClick={() => this.updateRedirectState(`/playlist/${playlist.id}`)}>
-                                    PLAY                                
+                                    onClick={() => this.updateRedirectState(`/playlist/${playlist.id}`)}>
+                                    PLAY                              
                                 </Button>
                             </Grid>
                         </Grid>
@@ -124,6 +129,10 @@ class PlaylistThumb extends React.Component {
                     <Button color="secondary" className={classes.action}
                             onClick={() => this.updateDeleteState(`/playlist/${playlist.id}`,`${playlist.author}`)}>
                         Delete                        
+                    </Button>
+                    <Button color="secondary" className={classes.action}
+                            onClick={() => this.updateDeleteState(`/playlist/${playlist.id}`,`${playlist.author}`)}>
+                        Share                        
                     </Button>
                 </div>
             </Paper>

@@ -10,14 +10,13 @@ import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import api from "../api-gateway";
 import { TextField, InputAdornment, Avatar } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import Header from '../header/header-control';
+import { CssBaseline } from '@material-ui/core';
 
-const styles = theme => ({
-    root: {
-        flexGrow: 1,
-    },
+const styles = theme => ({    
     content: {
         width: '100%',
+        minWidth: 400,
         maxWidth: 500,
         backgroundColor: theme.palette.background.paper,
     },
@@ -45,21 +44,7 @@ const styles = theme => ({
     action: {
         margin: theme.spacing.unit
     },
-    header: {
-        backgroundColor: theme.palette.primary.light,
-        height: 50,
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100vw',
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        zIndex: 999
-    },
-    spacer: {
-        height: 50
-    },
+    
 });
 
 class Playlist extends React.Component {
@@ -110,12 +95,12 @@ class Playlist extends React.Component {
         return (
             
             <Grid container className={classes.root} direction="column" spacing={8}>
-                <div className={classes.header}>
-                    <Link to={`/home/${playlist.author}`} className={classes.link}>
-                        <Button>Home</Button>
-                    </Link>
-                </div> 
-                <div className={classes.spacer} />             
+                <CssBaseline />
+                
+                <div>
+                    <Header/>                
+                </div>
+
                 <Grid container justify='center' spacing={32}>                                       
                     <div>
                         <Grid key={playlist.id} className={classes.demo}>
@@ -130,10 +115,10 @@ class Playlist extends React.Component {
                                             </Button>
                                         </Grid>
                                         <Grid item>
-                                            <Button variant="contained" color="primary" className={classes.action}>
-                                                Share
-                                            </Button>
-                                        </Grid>
+                                            <Typography color="primary" variant ="subtitle1" className={classes.action}>
+                                                {playlist.personal==true ? "Private" : "Public"}
+                                            </Typography>
+                                        </Grid>                                        
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Typography variant="title">

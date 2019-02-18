@@ -24,6 +24,10 @@ class ApiGateway {
         this._request('POST', path, data, cb);
     }
 
+    patch(path, data, cb) {
+        this._request('PATCH', path, data, cb);
+    }
+
     put(path, data, cb) {
         this._request('PUT', path, data, cb);
     }

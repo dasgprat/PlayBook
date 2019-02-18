@@ -1,6 +1,8 @@
 import React from 'react';
 import ProfileView from './profile-view';
 import AuthControl from '../auth/auth-control';
+import api from '../api-gateway';
+import { withRouter } from 'react-router-dom';
 
 class Profile extends React.Component {
     constructor(props) {
@@ -14,7 +16,11 @@ class Profile extends React.Component {
     }
 
     onSave(values) {
-        console.log(values);
+        api.patch(`/users/${AuthControl.user.id}`, values, (err, res) => {
+            if (err) return console.log(err);
+            AuthControl.user = res.content;
+            this.props.history.push('/home/' + AuthControl.user.username);
+        });
     }
 
     render() {
@@ -23,4 +29,4 @@ class Profile extends React.Component {
     }
 }
 
-export default Profile;
+export default withRouter(Profile);

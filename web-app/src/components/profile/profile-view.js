@@ -94,7 +94,7 @@ class ProfileView extends React.Component {
     render() {
         const { classes, match } = this.props;
         return (
-            <Grid container className={classes.root} direction="column" spacing={8}>
+            <Grid container className={classes.root} direction="column" spacing={8} alignItems="center">
                 <div className={classes.header}>
                     <Link to={`/home/${match.params.username}`} className={classes.link}>
                         <Button>Home</Button>
@@ -106,7 +106,7 @@ class ProfileView extends React.Component {
                     </FormControl>
                 </div>
                 <div className={classes.spacer} />
-                <Grid item sm={4}>
+                <Grid item sm={2}>
                     <Typography variant="h5">Account Basics</Typography>
                     <FormControl className={`${classes.formGroup} ${classes.shortInput}`}>
                         <FormLabel>Email</FormLabel>
@@ -139,7 +139,7 @@ class ProfileView extends React.Component {
                         </RadioGroup>
                     </FormControl>
                 </Grid>
-                <Grid item sm={4}>
+                <Grid item sm={2}>
                     <Typography variant="h5">Profile</Typography>
                     <FormControl className={`${classes.formGroup} ${classes.shortInput}`}>
                         <FormLabel>Name</FormLabel>
@@ -161,7 +161,7 @@ class ProfileView extends React.Component {
                             value={this.state.about}
                         />
                     </FormControl>
-                    <FormControl className={`${classes.formGroup}`}>
+                    <FormControl className={`${classes.formGroup} ${classes.shortInput}`}>
                         <FormLabel>Interests</FormLabel>
                         <SkillChips
                             classes={classes}
@@ -176,7 +176,7 @@ class ProfileView extends React.Component {
                             variant="outlined"
                         />
                     </FormControl>
-                    <FormControl className={`${classes.formGroup}`}>
+                    <FormControl className={`${classes.formGroup} ${classes.shortInput}`}>
                         <FormLabel>Experience</FormLabel>
                         <SkillChips
                             classes={classes}

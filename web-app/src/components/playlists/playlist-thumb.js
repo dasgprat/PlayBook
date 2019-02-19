@@ -78,11 +78,12 @@ class PlaylistThumb extends React.Component {
 
         if (this.state.renderDeleteOperation == true) {                        
             this.deletePlaylists(this.state.redirectTo, (err, res) => {
-                window.location.reload();   
+                window.location.reload();                
+                //this.props.history.push('/home/' + match.params.username);
                 if (err) {                                       
                     return this.setState({redirectToReferrer: false,renderDeleteOperation: false});
                 }                
-                this.props.playlist=[];
+                //this.props.playlist=[];
             });
 
         }   

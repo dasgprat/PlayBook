@@ -112,7 +112,7 @@ class HeaderView extends React.Component {
                                 <Paper>
                                     <ClickAwayListener onClickAway={this.onProfileMenuClose}>
                                         <MenuList>
-                                            <Link className={classes.link} to={`/profile/${AuthControl.user.username}`}>
+                                            <Link className={classes.link} to={`/profile/${match.params.username}`}>
                                                 <MenuItem onClick={this.onProfileMenuClose}>Profile</MenuItem>
                                             </Link>
                                             <MenuItem onClick={onLogout}>Logout</MenuItem>

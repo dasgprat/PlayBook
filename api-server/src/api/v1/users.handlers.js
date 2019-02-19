@@ -80,10 +80,24 @@ async function getUser(req, res) {
 async function updateUser(req, res) {
     try {
         logger.trace('Updating user information for user ' + req.params.id);
-        req.body.id = req.params.id;
-        let updatedUser = await UserModel.merge(req.body);
+        // Get the user
+        let user = await UserModel.find({ id: req.params.id });
+        if (!user) return response.sendErrorResponse(res, status.NOT_FOUND, 'Failed to find user to update');
+
+        // Add the profile information
+        if (req.body.username) user.username = req.body.username;
+        if (req.body.name) user.name = req.body.name;
+        if (req.body.email) user.contact.email = req.body.email;
+        if (req.body.experienced) user.skills.experienced = req.body.experienced;
+        if (req.body.interested) user.skills.interested = req.body.interested;
+        if (req.body.about) user.about = req.body.about;
+        if (req.body.gender) user.gender = req.body.gender;
+        // TODO: support changing password
+
+        await UserModel.merge(user);
+
         logger.trace('User updated. Preparing and sending response');
-        let body = generateUserResponse(updatedUser);
+        let body = generateUserResponse(user);
         return response.sendActionResponse(res, status.OK, 'Successfully saved user', body);
     } catch (err) {
         return response.sendErrorResponse(res, err, 'save user');

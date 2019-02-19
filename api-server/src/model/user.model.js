@@ -18,6 +18,7 @@ class User {
         };
         this.gender = props.gender || null;
         this.image = props.image || null;
+        this.about = props.about || null;
     }
 
     addInterest(skill) {

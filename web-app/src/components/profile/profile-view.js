@@ -45,7 +45,7 @@ class ProfileView extends React.Component {
             email: user.contact.email,
             gender: user.gender || '',
             name: user.name,
-            about: user.about,
+            about: user.about || '',
             interested: user.skills.interested || [],
             currentInterested: '',
             experienced: user.skills.experienced || [],
@@ -67,24 +67,24 @@ class ProfileView extends React.Component {
 
     onInterestKeyPress(e) {
         if (e.key === 'Enter') {
-            this.setState({ interested: [...this.state.interested, this.state.currentInterested] });
+            this.setState({ interested: [...this.state.interested, this.state.currentInterested], changed: true });
             this.state.currentInterested = '';
         }
     }
 
     onExperienceKeyPress(e) {
         if (e.key === 'Enter') {
-            this.setState({ experienced: [...this.state.experienced, this.state.currentExperienced] });
+            this.setState({ experienced: [...this.state.experienced, this.state.currentExperienced], changed: true });
             this.state.currentExperienced = '';
         }
     }
 
     onInterestDelete(label) {
-        this.setState({ interested: this.state.interested.filter(i => i !== label) });
+        this.setState({ interested: this.state.interested.filter(i => i !== label), changed: true });
     }
 
     onExperienceDelete(label) {
-        this.setState({ experienced: this.state.experienced.filter(e => e !== label) });
+        this.setState({ experienced: this.state.experienced.filter(e => e !== label), changed: true });
     }
 
     onSave() {

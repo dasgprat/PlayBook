@@ -5,11 +5,10 @@ import {Redirect, withRouter} from 'react-router-dom';
 import { withStyles } from "@material-ui/core/styles";
 import Grid from '@material-ui/core/Grid';
 import api from "../api-gateway";
-import AuthControl from '../auth/auth-control';
-import Button from '@material-ui/core/Button';
-import GridList from '@material-ui/core/GridList';
-import Typography from '@material-ui/core/Typography';
-
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
+import green from '@material-ui/core/colors/green';
+import classNames from 'classnames';
 
 const styles = theme => ({
     root: {
@@ -30,7 +29,14 @@ const styles = theme => ({
         flexWrap: 'nowrap',        
         height: 369,        
         transform: 'translateZ(0)',
-    }
+    },
+    cssRoot: {
+        color: theme.palette.getContrastText(green[500]),
+        backgroundColor: green[500],
+        '&:hover': {
+          backgroundColor: green[700],
+        },
+    },
 });
 
 class PlaylistsController extends React.Component {
@@ -74,10 +80,11 @@ class PlaylistsController extends React.Component {
             <div className={classes.root}>
                 <Grid container justify='center' alignItems="center" spacing={0}>
                     <Grid item xs={false}>
-                        <Button variant="contained" color="primary" className={classes.create}
-                                onClick={() => this.updateRedirectState()}>
-                            Create Playlist
-                        </Button>                        
+                        <Fab variant="extended" color="primary" aria-label="Add" className={classNames(classes.create, classes.cssRoot)}
+                                                onClick={() => this.updateRedirectState()}>
+                            <AddIcon className={classes.extendedIcon} />
+                            Create Playlist                                                            
+                        </Fab>                        
                     </Grid>
                 </Grid>
                 

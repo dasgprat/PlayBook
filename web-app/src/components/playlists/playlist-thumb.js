@@ -8,12 +8,13 @@ import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import {Redirect} from "react-router-dom";
 import api from "../api-gateway";
-import Icon from '@material-ui/core/Icon';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const styles = theme => ({
     root: {
         width: '100%',
         maxWidth: 360,
+        minWidth: 300,
         backgroundColor: theme.palette.background.paper,
         margin: theme.spacing.unit,
     },
@@ -101,17 +102,19 @@ class PlaylistThumb extends React.Component {
                                     </Typography>
                                 </div>
                             </Grid>
-                            <Grid item>
+                            <Grid item>                                
                                 <Button variant="outlined" color="primary" className={classes.action}
-                                    onClick={() => this.updateRedirectState(`/playlist/${playlist.id}`)}>
-                                    PLAY                              
-                                </Button>
+                                        onClick={() => this.updateRedirectState(`/playlist/${playlist.id}`)}>
+                                        PLAY                              
+                                </Button>                                
                             </Grid>
                         </Grid>
                         <Grid item xs={12}>
-                            <Typography variant="h3">
-                                { playlist.name}
-                            </Typography>
+                            <Tooltip title={playlist.name} aria-label="Name">
+                                <Typography variant="h4" noWrap>
+                                    { playlist.name}
+                                </Typography>
+                            </Tooltip>
                         </Grid>
                         <Grid item xs={12}>
                             <Typography variant="subtitle1">
@@ -122,9 +125,11 @@ class PlaylistThumb extends React.Component {
                 </div>
                 <Divider />
                 <div className={classes.section2}>
-                    <Typography color="textSecondary" noWrap={true}>
-                        { playlist.description }
-                    </Typography>
+                    <Tooltip title={playlist.description} aria-label="Description">
+                        <Typography color="textSecondary" noWrap={true}>
+                            { playlist.description }
+                        </Typography>
+                    </Tooltip>
                 </div>
                 <Divider />
                 <div className={classes.section3}>

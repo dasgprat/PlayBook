@@ -143,7 +143,7 @@ class Playlist extends React.Component {
                             </div>
                             <Divider />
                             <div className={classes.section3}>
-                                <Typography color="textSecondary" noWrap={true} className={classes.section3}>
+                                <Typography color="textSecondary"  className={classes.section3}>
                                     { playlist.description }
                                 </Typography>
                             </div>

@@ -30,7 +30,7 @@ const SkillChips = ({ classes, interests: skills, onDelete }) => (
                 />
             ))
         ) : (
-            <Typography>Add items below</Typography>
+        <Typography>Add items below</Typography>
         )}
     </div>
 );

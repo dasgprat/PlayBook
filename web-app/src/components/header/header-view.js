@@ -18,7 +18,7 @@ import {
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import { Link } from 'react-router-dom';
-import Typography from '@material-ui/core/Typography';
+
 
 const SearchBar = ({ classes, onSubmit, handleChange }) => (
     <form onSubmit={onSubmit}>
@@ -112,7 +112,7 @@ class HeaderView extends React.Component {
                                 <Paper>
                                     <ClickAwayListener onClickAway={this.onProfileMenuClose}>
                                         <MenuList>
-                                            <Link className={classes.link} to={`/profile/${match.params.username}`}>
+                                            <Link className={classes.link} to={`/profile/${AuthControl.user.username}`}>
                                                 <MenuItem onClick={this.onProfileMenuClose}>Profile</MenuItem>
                                             </Link>
                                             <MenuItem onClick={onLogout}>Logout</MenuItem>

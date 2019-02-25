@@ -21,7 +21,8 @@ const styles = theme => ({
         padding: 0,
     },
     subscribe: {
-        marginBottom: 80,
+        //marginBottom: 80,
+        margin: theme.spacing.unit * 2,
     },
     section1: {
         margin: `${theme.spacing.unit * 3}px ${theme.spacing.unit * 2}px`,
@@ -101,7 +102,7 @@ class PlaylistThumb extends React.Component {
                                 </div>
                             </Grid>
                             <Grid item>
-                                <Button variant="contained" color="primary" className={classes.action}
+                                <Button variant="outlined" color="primary" className={classes.action}
                                     onClick={() => this.updateRedirectState(`/playlist/${playlist.id}`)}>
                                     PLAY                              
                                 </Button>

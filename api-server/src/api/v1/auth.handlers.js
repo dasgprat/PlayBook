@@ -4,7 +4,7 @@ const response = require('./response');
 const status = require('http-status');
 const logger = require('winstonson')(module);
 const security = require('../../util/security');
-const { generateUserResponse} = require('./users.handlers');
+const { generateUserResponse } = require('./users.handlers');
 
 module.exports = {
     verifyAuthorized,
@@ -42,7 +42,7 @@ async function login(req, res) {
 async function verifyAuthorized(req, res) {
     // We should not get to this point unless the request came with a valid authorization token. Just return
     // success
-    let user = await UserModel.find({id: req.params.id});
+    let user = await UserModel.find({ username: req.user.sub });
     let body = generateUserResponse(user);
     return response.sendQueryResponse(res, status.OK, { user: body });
 }

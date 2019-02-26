@@ -18,7 +18,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
@@ -149,8 +148,7 @@ class PlaylistForm extends React.Component {
         this.onPrivacyChange = this.onPrivacyChange.bind(this);        
         this.handleLinksChange = this.handleLinksChange.bind(this);
         this.onLinksAdd = this.onLinksAdd.bind(this);
-        this.onLinksDelete = this.onLinksDelete.bind(this);
-        this.onLinksEdit = this.onLinksEdit.bind(this);
+        this.onLinksDelete = this.onLinksDelete.bind(this);        
     }
 
     onNameChange(event) {

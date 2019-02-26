@@ -109,12 +109,10 @@ class PlaylistThumb extends React.Component {
                                 </Button>                                
                             </Grid>
                         </Grid>
-                        <Grid item xs={12}>
-                            <Tooltip title={playlist.name} aria-label="Name">
-                                <Typography variant="h4" noWrap>
+                        <Grid item xs={12}>                            
+                            <Typography variant="h4" noWrap>
                                     { playlist.name}
-                                </Typography>
-                            </Tooltip>
+                            </Typography>                            
                         </Grid>
                         <Grid item xs={12}>
                             <Typography variant="subtitle1">

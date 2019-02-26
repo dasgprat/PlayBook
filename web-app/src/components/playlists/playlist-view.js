@@ -150,9 +150,9 @@ class Playlist extends React.Component {
                             <Divider />
                             <div className={classes.section4}>                            
                                 <Grid container direction="column">
-                                    {playlist.links.map(link => (
+                                    {playlist.links.map((link,index) => (
                                     <Paper className={classes.section4}>
-                                        <Grid key={link} item xs zeroMinWidth>                                            
+                                        <Grid key={index} item xs zeroMinWidth>                                            
                                             <Typography color="primary" >
                                                 <a href={link}>
                                                     {link}

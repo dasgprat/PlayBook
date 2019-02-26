@@ -18,8 +18,10 @@ import Checkbox from '@material-ui/core/Checkbox';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
 import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
 
 const styles = theme => {
     return {
@@ -96,29 +98,29 @@ const LinkInput = ({ classes, name, value, onChange, onLinksAdd, autoFocus, numL
     />
 );
 
-const LinkShow = ({ classes, name, value, onChange, onLinksDelete, autoFocus, numLinks }) => (
-    <TextField
-        required={numLinks <= 1}
-        className={classes.form}
-        name={name}
-        value={value}
-        variant="outlined"
-        //multiline
-        placeholder="Add Link"
-        onChange={onChange}        
-        autoFocus={autoFocus}
-        InputProps={{
-            endAdornment: (
-                <InputAdornment position="end">                
-                <Tooltip title="Delete Link" aria-label="Delete">
-                <IconButton aria-label="Toggle password visibility" color ="secondary" onClick={onLinksDelete}>
-                <DeleteIcon />                
-                </IconButton> 
-                </Tooltip>               
-                </InputAdornment>
-            )
-        }}
-    />
+const LinkShow = ({ classes,onLinksDelete, linksList: links}) => (
+    <div className ={classes.form}>
+    {   links.length > 0 ? (
+            links.map((i, index) => (
+            <TextField        
+                className={classes.form}
+                key = {index}  
+                value={i}
+                variant="outlined"                
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">                                               
+                            <Tooltip title="Delete Link" aria-label="Delete">
+                                <IconButton aria-label="Toggle password visibility" onClick={() => onLinksDelete(i)}>
+                                    <DeleteIcon />                
+                                </IconButton> 
+                            </Tooltip>               
+                        </InputAdornment>
+                    )
+                }}
+            />
+    ))):(<Typography> </Typography>)}
+    </div>
 );
 
 class PlaylistForm extends React.Component {
@@ -148,6 +150,7 @@ class PlaylistForm extends React.Component {
         this.handleLinksChange = this.handleLinksChange.bind(this);
         this.onLinksAdd = this.onLinksAdd.bind(this);
         this.onLinksDelete = this.onLinksDelete.bind(this);
+        this.onLinksEdit = this.onLinksEdit.bind(this);
     }
 
     onNameChange(event) {
@@ -202,8 +205,7 @@ class PlaylistForm extends React.Component {
         api.get(`/playlist/${id}`, callback);
     }
 
-    onAddLinksKeyPress(e) {
-        //console.log("Error");
+    onAddLinksKeyPress(e) {        
         if (e.key === 'Enter') {
             this.setState({ links: [...this.state.links, this.state.currentLinks] });
             this.state.currentLinks = "";
@@ -213,23 +215,18 @@ class PlaylistForm extends React.Component {
         this.setState({ [e.target.name]: e.target.value });
     }
     
-    onLinksAdd(e){
-        //var links_temp = `${this.state.links}${this.state.currentLinks}`
-        //this.setState({ links: links_temp});
-        this.setState({ links: [...this.state.links, this.state.currentLinks] });
-        //console.log(this.state.currentLinks)
+    onLinksAdd(e){        
+        this.setState({ links: [...this.state.links, this.state.currentLinks] });        
         this.state.currentLinks = "";
     }
     onLinksDelete(e){
-        console.log(e);
-        console.log("hi");
         this.setState({ links: this.state.links.filter(i => i !== e) });        
     }
+        
     componentDidMount() {
         if (this.state.id) {
             this.getPlaylist(this.state.id, (err, res) => {
                 if (err) {
-                    console.log('Error in getPlaylist');
                     return this.setState({ playlist: null });
                 }
                 return this.setState({
@@ -345,23 +342,15 @@ class PlaylistForm extends React.Component {
                                     id= "currentLinks" name="currentLinks"
                                     label="currentLinks"
                                     classes={classes}
-                                    value= {this.state.currentLinks}
-                                    //onKeyPress={this.onAddLinksKeyPress}
+                                    value= {this.state.currentLinks}                                    
                                     onChange={this.handleLinksChange}
-                                    onLinksAdd={this.onLinksAdd}
-                                    //numLinks ={0}
+                                    onLinksAdd={this.onLinksAdd}                                    
                                     />
-                            {this.state.links.map((link,index) => (                               
                             <LinkShow
-                                    id= {index} name={link}
-                                    key={index}
-                                    label={link}
-                                    classes={classes}
-                                    value= {link}
-                                    //onChange={this.handleLinksChange}                                   
-                                    onLinksDelete={this.onLinksDelete}                                    
-                                    />                                
-                            ))}                                
+                                classes={classes}
+                                linksList={this.state.links}
+                                onLinksDelete={this.onLinksDelete}                            
+                            />
                             </FormControl>                            
                             <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
                                 Apply

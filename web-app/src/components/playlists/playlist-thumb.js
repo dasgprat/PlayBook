@@ -7,8 +7,15 @@ import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import {Redirect} from "react-router-dom";
-import api from "../api-gateway";
 import Tooltip from '@material-ui/core/Tooltip';
+import {
+    FacebookShareButton,    
+    LinkedinShareButton,
+    TwitterShareButton,
+    FacebookIcon,
+    LinkedinIcon,
+    TwitterIcon
+} from 'react-share';
 
 const styles = theme => ({
     root: {
@@ -29,18 +36,25 @@ const styles = theme => ({
         margin: `${theme.spacing.unit * 3}px ${theme.spacing.unit * 2}px`,
     },
     section2: {
-        margin: theme.spacing.unit * 2,
+        margin: theme.spacing.unit * 2,        
+        
     },
     section3: {
         margin: `0 ${theme.spacing.unit}px`,
     },
     action: {
         margin: theme.spacing.unit,
-    },
-    rightIcon: {
-        marginLeft: theme.spacing.unit,
+    },    
+    share:{
+        //position: 'absolute',
+        margin: theme.spacing.unit,
+        cursor: 'pointer',
+        display: 'inline-block',
     },
 });
+
+const title = 'View My Playlist';
+const shareUrl = ''
 
 class PlaylistThumb extends React.Component {
     constructor(props) {
@@ -51,24 +65,11 @@ class PlaylistThumb extends React.Component {
             renderDeleteOperation: false,
             playlist_creator: ""
         };
-        this.updateRedirectState = this.updateRedirectState.bind(this);
-        this.updateDeleteState = this.updateDeleteState.bind(this);
+        this.updateRedirectState = this.updateRedirectState.bind(this);        
     }
 
     updateRedirectState(url) {
         this.setState({redirectTo: url, redirectToReferrer: true});
-    }
-
-    updateDeleteState(url,playlistAuthor) {
-        this.setState({redirectTo: url, renderDeleteOperation: true, playlist_creator: playlistAuthor});
-    }
-
-    deletePlaylists(url, callback) {
-        //api.get(`/user/${username}/playlist`, callback);
-        // api.get(`/user/${username}/playlist/5c523fde15bf407420799e69`, callback);
-        api.delete(url,callback);
-        
-        
     }
 
     render() {
@@ -130,15 +131,37 @@ class PlaylistThumb extends React.Component {
                     </Tooltip>
                 </div>
                 <Divider />
-                <div className={classes.section3}>
-                    <Button color="secondary" className={classes.action}
-                            onClick={() => this.updateDeleteState(`/playlist/${playlist.id}`,`${playlist.author}`)}>
-                        Delete                        
-                    </Button>
-                    <Button color="secondary" className={classes.action}
-                            onClick={() => this.updateDeleteState(`/playlist/${playlist.id}`,`${playlist.author}`)}>
-                        Share                        
-                    </Button>
+                <div className={classes.section3}>                                       
+                    <FacebookShareButton
+                        className= {classes.share}
+                        //url  = {`https://prateekdasgupta.me/playlist/${playlist.id}`}
+                        url   = "https://prateekdasgupta.me/"
+                        quote = {`View My Playlist ${playlist.name}`}
+                        //hashtag={`${playlist.name}`}
+                        >                        
+                        <FacebookIcon                            
+                            size={32}
+                            round />
+                    </FacebookShareButton>  
+                    <LinkedinShareButton
+                        //url  = {`https://prateekdasgupta.me/playlist/${playlist.id}`}
+                        url   = "https://prateekdasgupta.me/"
+                        //title = {`View My Playlist ${playlist.name}`}
+                        //description={`${playlist.description}`}                        
+                        className={classes.share}>
+                        <LinkedinIcon
+                            size={32}
+                            round />
+                    </LinkedinShareButton>
+                    <TwitterShareButton
+                        //url  = {`https://prateekdasgupta.me/playlist/${playlist.id}`}
+                        url   = "https://prateekdasgupta.me/"
+                        title = {`View My Playlist ${playlist.name}`}
+                        className={classes.share}>
+                        <TwitterIcon
+                            size={32}
+                            round />
+                    </TwitterShareButton>
                 </div>
             </Paper>
         );

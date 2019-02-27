@@ -18,7 +18,7 @@ import {
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import { Link } from 'react-router-dom';
-import Typography from '@material-ui/core/Typography';
+
 
 const SearchBar = ({ classes, onSubmit, handleChange }) => (
     <form onSubmit={onSubmit}>

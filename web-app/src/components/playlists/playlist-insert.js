@@ -15,6 +15,12 @@ import Header from '../header/header-control';
 import { CssBaseline } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from '@material-ui/icons/Add';
+import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
 
 const styles = theme => {
     return {
@@ -66,6 +72,56 @@ const styles = theme => {
     }; // Fix IE 11 issue.
 };
 
+const LinkInput = ({ classes, name, value, onChange, onLinksAdd, autoFocus, numLinks }) => (
+    <TextField
+        required={numLinks <= 1}
+        className={classes.form}
+        name={name}
+        value={value}
+        variant="outlined"
+        //multiline
+        placeholder="Add Link"
+        onChange={onChange}        
+        autoFocus={autoFocus}
+        InputProps={{
+            endAdornment: (
+                <InputAdornment position="end">                
+                <Tooltip title="Add Link" aria-label="Add">
+                <IconButton aria-label="Toggle password visibility" color="primary" onClick={onLinksAdd}>
+                <AddIcon /> 
+                </IconButton>
+                </Tooltip>
+                </InputAdornment>
+            )
+        }}
+    />
+);
+
+const LinkShow = ({ classes,onLinksDelete, linksList: links}) => (
+    <div className ={classes.form}>
+    {   links.length > 0 ? (
+            links.map((i, index) => (
+            <TextField        
+                className={classes.form}
+                key = {index}  
+                value={i}
+                variant="outlined"                
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">                                               
+                            <Tooltip title="Delete Link" aria-label="Delete">
+                                <IconButton aria-label="Toggle password visibility" onClick={() => onLinksDelete(i)}>
+                                    <DeleteIcon />                
+                                </IconButton> 
+                            </Tooltip>               
+                        </InputAdornment>
+                    )
+                }}
+            />
+    ))):(<Typography> </Typography>)}
+    </div>
+);
+
 class PlaylistForm extends React.Component {
 
     constructor(props) {
@@ -76,10 +132,11 @@ class PlaylistForm extends React.Component {
             name: "",
             categories: [],
             description: "",
-            links: "",
+            links: [],
             redirectToReferrer: false,
             categoryOptions: [],
             personal: false,
+            currentLinks: '',
         };
 
         this.onNameChange = this.onNameChange.bind(this);
@@ -88,7 +145,10 @@ class PlaylistForm extends React.Component {
         this.onDescriptionChange = this.onDescriptionChange.bind(this);
         this.onLinksChange = this.onLinksChange.bind(this);
         this.onFormSubmit = this.onFormSubmit.bind(this);
-        this.onPrivacyChange = this.onPrivacyChange.bind(this);
+        this.onPrivacyChange = this.onPrivacyChange.bind(this);        
+        this.handleLinksChange = this.handleLinksChange.bind(this);
+        this.onLinksAdd = this.onLinksAdd.bind(this);
+        this.onLinksDelete = this.onLinksDelete.bind(this);        
     }
 
     onNameChange(event) {
@@ -143,11 +203,28 @@ class PlaylistForm extends React.Component {
         api.get(`/playlist/${id}`, callback);
     }
 
+    onAddLinksKeyPress(e) {        
+        if (e.key === 'Enter') {
+            this.setState({ links: [...this.state.links, this.state.currentLinks] });
+            this.state.currentLinks = "";
+        }
+    }
+    handleLinksChange(e) {        
+        this.setState({ [e.target.name]: e.target.value });
+    }
+    
+    onLinksAdd(e){        
+        this.setState({ links: [...this.state.links, this.state.currentLinks] });        
+        this.state.currentLinks = "";
+    }
+    onLinksDelete(e){
+        this.setState({ links: this.state.links.filter(i => i !== e) });        
+    }
+        
     componentDidMount() {
         if (this.state.id) {
             this.getPlaylist(this.state.id, (err, res) => {
                 if (err) {
-                    console.log('Error in getPlaylist');
                     return this.setState({ playlist: null });
                 }
                 return this.setState({
@@ -165,7 +242,8 @@ class PlaylistForm extends React.Component {
                         }
                     }),
                     description: res.description,
-                    links: res.links.length > 0 ? res.links.join('\n') : "",
+                    //links: res.links.length > 0 ? res.links.join('\n') : "",
+                    links: res.links.length > 0 ? res.links: "",
                     personal: res.personal
                 });
             });
@@ -173,6 +251,7 @@ class PlaylistForm extends React.Component {
     }
 
     onFormSubmit(event) {
+        console.log(this.state.links);
         event.stopPropagation();
         event.preventDefault();
         let playlist = {
@@ -186,7 +265,8 @@ class PlaylistForm extends React.Component {
                 }
             }),
             description: this.state.description,
-            links: this.state.links.length > 0 ? this.state.links.split('\n') : [],
+            //links: this.state.links.length > 0 ? this.state.links.split('\n') : [],
+            links: this.state.links.length > 0 ? this.state.links: [],
             personal: this.state.personal,
             subscribedBy: []
         };
@@ -254,17 +334,24 @@ class PlaylistForm extends React.Component {
                                     value={this.state.description}
                                     onChange={this.onDescriptionChange} />
                             </FormControl>
+                            
                             <FormControl margin="normal" fullWidth>
-                                <TextField
-                                    id="links" name="links"
-                                    label="Links"
-                                    multiline
-                                    placeholder="Add more links by pressing enter"
-                                    value={this.state.links}
-                                    onChange={this.onLinksChange} />
-                            </FormControl>
+                            <LinkInput
+                                    id= "currentLinks" name="currentLinks"
+                                    label="currentLinks"
+                                    classes={classes}
+                                    value= {this.state.currentLinks}                                    
+                                    onChange={this.handleLinksChange}
+                                    onLinksAdd={this.onLinksAdd}                                    
+                                    />
+                            <LinkShow
+                                classes={classes}
+                                linksList={this.state.links}
+                                onLinksDelete={this.onLinksDelete}                            
+                            />
+                            </FormControl>                            
                             <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
-                                Submit
+                                Apply
                             </Button>
                         </form>
                     </Paper>

@@ -5,29 +5,33 @@ import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Chip from '@material-ui/core/Chip';
-import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import api from "../api-gateway";
-import { TextField, InputAdornment, Avatar } from '@material-ui/core';
 import Header from '../header/header-control';
 import { CssBaseline } from '@material-ui/core';
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Tooltip from '@material-ui/core/Tooltip';
+import AuthControl from '../auth/auth-control';
 
 const styles = theme => ({    
     content: {
         width: '100%',
-        minWidth: 400,
+        minWidth: 350,
         maxWidth: 500,
         backgroundColor: theme.palette.background.paper,
     },
     subscribe: {
-        marginBottom: 80,
+        margin: theme.spacing.unit * 2,
+        //marginBottom: 80,
     },
     section1: {
         margin: `${theme.spacing.unit * 3}px ${theme.spacing.unit * 2}px`,
     },
     section2: {
-        margin: theme.spacing.unit * 2,
+        margin: theme.spacing.unit,
     },
     chip: {
         margin: theme.spacing.unit,
@@ -53,9 +57,11 @@ class Playlist extends React.Component {
         this.state = {
             id: this.props.match.params.id,
             playlist: null,
-            redirectToReferrer: false
+            redirectToReferrer: false,
+            renderDeleteOperation: false
         };
         this.updateRedirectState = this.updateRedirectState.bind(this);
+        this.updateDeleteState = this.updateDeleteState.bind(this);
     }
 
     updateRedirectState() {
@@ -63,18 +69,36 @@ class Playlist extends React.Component {
     }
 
     getPlaylist(id, callback) {
-        console.log(`view: /playlist/${id}`);
+        //console.log(`view: /playlist/${id}`);
         api.get(`/playlist/${id}`, callback);
     }
 
-    componentDidMount() {
+    updateDeleteState(url,playlistAuthor) {
+        this.setState({redirectTo: url, renderDeleteOperation: true, playlist_creator: playlistAuthor});
+    }
+
+    deletePlaylists(url, callback) {        
+        api.delete(url,callback);
+    }
+
+    componentDidMount() {        
         if (this.state.id) {
             this.getPlaylist(this.state.id, (err, res) => {
-                if (err) {
-                    return this.setState({ playlist: null });
+                //console.log(res);
+                if (err) {                    
+                    return this.setState({ playlist: null});
                 }
+                if(res == null){                    
+                    return <Redirect to={`/home/${AuthControl.user.username}`}/>;
+                }                
                 return this.setState({ playlist: res });
             });
+        }        
+    }
+
+    componentDidUpdate(){        
+        if(this.state.playlist == null){            
+            return this.setState({renderDeleteOperation: true})
         }
     }
 
@@ -82,18 +106,31 @@ class Playlist extends React.Component {
         const { classes } = this.props;
         const { playlist } = this.state;
 
-        if (!playlist) {
-            return (
-                <div>Loading!</div>
-            );
+        if (!playlist ) {            
+            if(this.state.renderDeleteOperation == true){
+                return <Redirect to={`/home/${AuthControl.user.username}`}/>;
+            }
+            else{
+                return (
+                <div>Loading! </div>
+                );
+            }
         }
 
         if (this.state.redirectToReferrer === true) {
             return <Redirect to={`/playlist/${this.state.id}/edit`}/>;
         }
 
-        return (
-            
+        if (this.state.renderDeleteOperation == true) {                        
+            this.deletePlaylists(this.state.redirectTo, (err, res) => {
+                this.state.playlist = null;                
+                if (err) {                                       
+                    return this.setState({redirectToReferrer: false,renderDeleteOperation: false});
+                }
+            });
+        }
+
+        return (            
             <Grid container className={classes.root} direction="column" spacing={8}>
                 <CssBaseline />
                 
@@ -109,10 +146,16 @@ class Playlist extends React.Component {
                                 <Grid container alignItems="center">
                                     <Grid item container xs={12} justify="space-between" className={classes.subscribe}>
                                         <Grid item>
-                                            <Button variant="contained" color="primary" className={classes.action}
-                                                onClick={() => this.updateRedirectState()}>
-                                                Edit
-                                            </Button>
+                                            <Tooltip title="Edit Playlist" aria-label="Edit">
+                                                <IconButton aria-label="Toggle password visibility" color="primary" onClick={() => this.updateRedirectState()}>
+                                                    <EditIcon /> 
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title="Delete Playlist" aria-label="Delete">
+                                                <IconButton aria-label="Toggle password visibility" color="secondary" onClick={() => this.updateDeleteState(`/playlist/${playlist.id}`,`${playlist.author}`)}>
+                                                    <DeleteIcon /> 
+                                                </IconButton>
+                                            </Tooltip>
                                         </Grid>
                                         <Grid item>
                                             <Typography color="primary" variant ="subtitle1" className={classes.action}>
@@ -120,12 +163,12 @@ class Playlist extends React.Component {
                                             </Typography>
                                         </Grid>                                        
                                     </Grid>
-                                    <Grid item xs={12}>
+                                    <Grid item xs={12} className={classes.section2}>
                                         <Typography variant="title">
                                             { playlist.name }
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={12}>
+                                    <Grid item xs={12}  className={classes.section2}>
                                         <Typography variant="subtitle1">
                                             by { playlist.author }
                                         </Typography>
@@ -140,23 +183,27 @@ class Playlist extends React.Component {
                             </div>
                             <Divider />
                             <div className={classes.section3}>
-                                <Typography color="textSecondary" noWrap={true}>
+                                <Typography color="textSecondary"  className={classes.section3}>
                                     { playlist.description }
                                 </Typography>
                             </div>
                             <Divider />
-                            <div className={classes.section4}>
+                            <div className={classes.section4}>                            
                                 <Grid container direction="column">
-                                    {playlist.links.map(link => (
-                                        <Grid key={link} item xs={3}>
-                                            <a href={link}>
-                                                { link }
-                                            </a>
+                                    {playlist.links.map((link,index) => (
+                                    <Paper className={classes.section4}>
+                                        <Grid key={index} item xs zeroMinWidth>                                            
+                                            <Typography color="primary" >
+                                                <a href={link}>
+                                                    {link}
+                                                </a>
+                                            </Typography>                                            
                                         </Grid>
-                                    ))}
-                                </Grid>
+                                    </Paper>
+                                    ))}                                    
+                                </Grid>                            
                             </div>
-                            <Divider />                            
+                            <Divider />    
                         </Paper>
                     </Grid>
                     </div>

@@ -4,19 +4,19 @@ const passport = require('passport');
 
 const playlist = express.Router();
 
-playlist.post('/playlist/',
+playlist.post('/playlists/',
     passport.authenticate('jwt', { session: false }),
     handler.addPlaylist);
 
-playlist.delete('/playlist/:id',
+playlist.delete('/playlists/:id',
     passport.authenticate('jwt', {session: false}),
     handler.deletePlaylist);            
 
-playlist.get('/playlist/:id',
+playlist.get('/playlists/:id',
     passport.authenticate('jwt', { session: false }),
     handler.getPlaylist);
 
-playlist.get('/user/:username/playlist',
+playlist.get('/playlists',
     passport.authenticate('jwt', { session: false }),
     handler.getPlaylists);
 

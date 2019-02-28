@@ -69,8 +69,7 @@ class Playlist extends React.Component {
     }
 
     getPlaylist(id, callback) {
-        //console.log(`view: /playlist/${id}`);
-        api.get(`/playlist/${id}`, callback);
+        api.get(`/playlists/${id}`, callback);
     }
 
     updateDeleteState(url,playlistAuthor) {
@@ -170,7 +169,7 @@ class Playlist extends React.Component {
                                     </Grid>
                                     <Grid item xs={12}  className={classes.section2}>
                                         <Typography variant="subtitle1">
-                                            by { playlist.author }
+                                            by { playlist.author.name }
                                         </Typography>
                                     </Grid>
                                 </Grid>

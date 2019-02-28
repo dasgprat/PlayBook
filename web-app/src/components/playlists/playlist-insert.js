@@ -199,8 +199,7 @@ class PlaylistForm extends React.Component {
     }
 
     getPlaylist(id, callback) {
-        console.log(`insert: /playlist/${id}`);
-        api.get(`/playlist/${id}`, callback);
+        api.get(`/playlists/${id}`, callback);
     }
 
     onAddLinksKeyPress(e) {        
@@ -257,7 +256,7 @@ class PlaylistForm extends React.Component {
         let playlist = {
             id:   this.state.id,
             name: this.state.name,
-            author: AuthControl.user.username,
+            author: AuthControl.user.id,
             categories: this.state.categories.map(category => {
                 return {
                     id: category.value,
@@ -270,10 +269,8 @@ class PlaylistForm extends React.Component {
             personal: this.state.personal,
             subscribedBy: []
         };
-        let url = "/playlist";
-        api.post(url, playlist, (err, res) => {
+        api.post(`/playlists`, playlist, (err, res) => {
             if (err) console.log(err);
-            console.log(JSON.stringify(res));
             this.setState({id: res.content.id, redirectToReferrer: true});
         });
     }

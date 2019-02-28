@@ -3,6 +3,7 @@ const Category = require('../../model/category.model');
 const response = require('./response');
 const status = require('http-status');
 const logger = require('winstonson')(module);
+const url = require('url');
 
 module.exports = {
     addPlaylist,
@@ -16,14 +17,11 @@ async function addPlaylist(req, res) {
         if(!req.body.name || !req.body.description || !req.body.author){
             return response.sendErrorResponse(res, status.BAD_REQUEST, 'Missing name or description or author');
         }
-        logger.trace(JSON.stringify(req.body));
         let playlist = new Playlist.Playlist(req.body);
-        playlist.categories = await Promise.all(req.body.categories.map(async category => {
-            let cat = await Category.merge(category);
-            console.log(cat);
-            return cat;
+        let categories = await Promise.all(req.body.categories.map(async category => {
+            return await Category.merge(category);
         }));
-        logger.trace('category', JSON.stringify(req.body));
+        playlist.categories = categories.map(category => { return category.id });
         playlist = await Playlist.merge(playlist);
         return response.sendActionResponse(res, status.CREATED, 'Successfully added new playlist', playlist);
     } catch (err) {
@@ -34,8 +32,9 @@ async function addPlaylist(req, res) {
 
 async function getPlaylists(req, res) {
     try {
-        logger.trace(`Retrieving playlist for ${req.params.username}`);
-        let playlists = await Playlist.find({ author: req.params.username });
+        const url_parts = url.parse(req.url, true);
+        logger.trace(`Retrieving playlist for ${JSON.stringify(url_parts.query)}`);
+        let playlists = await Playlist.find(url_parts.query);
         return response.sendQueryResponse(res, status.OK, playlists);
     } catch (err) {
         logger.error(err);

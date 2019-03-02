@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import AuthControl from '../auth/auth-control';
+import user from '../../model/user.model';
 import styles from './header-styles';
 import {
     TextField,
@@ -18,7 +19,6 @@ import {
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import { Link } from 'react-router-dom';
-
 
 const SearchBar = ({ classes, onSubmit, handleChange }) => (
     <form onSubmit={onSubmit}>
@@ -40,8 +40,6 @@ const SearchBar = ({ classes, onSubmit, handleChange }) => (
         />
     </form>
 );
-
-
 
 class HeaderView extends React.Component {
     constructor(props) {
@@ -84,10 +82,10 @@ class HeaderView extends React.Component {
         return (
             <div className={classes.header}>
                 <div className={classes.logoIcon}>
-                    <Link to={`/home/${AuthControl.user.username}`} className={classes.link}>
-                        <Button>PlayBook</Button>                 
-                    </Link> 
-                </div>               
+                    <Link to={`/home/${user.get().username}`} className={classes.link}>
+                        <Button>PlayBook</Button>
+                    </Link>
+                </div>
                 <SearchBar classes={classes} handleChange={this.handleChange} onSubmit={this.onSearchSubmit} />
                 <div className={classes.profileAvatarWrapper}>
                     <IconButton
@@ -112,7 +110,7 @@ class HeaderView extends React.Component {
                                 <Paper>
                                     <ClickAwayListener onClickAway={this.onProfileMenuClose}>
                                         <MenuList>
-                                            <Link className={classes.link} to={`/profile/${AuthControl.user.username}`}>
+                                            <Link className={classes.link} to={`/profile/${user.get().username}`}>
                                                 <MenuItem onClick={this.onProfileMenuClose}>Profile</MenuItem>
                                             </Link>
                                             <MenuItem onClick={onLogout}>Logout</MenuItem>

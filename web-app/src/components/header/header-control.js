@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom';
 import HeaderView from './header-view';
 import { withCookies } from 'react-cookie';
 import AuthControl from '../auth/auth-control';
+import user from '../../model/user.model';
 
 class Header extends React.Component {
     constructor(props) {
@@ -23,8 +24,7 @@ class Header extends React.Component {
     onLogout() {
         // TODO: for a more secure logout, we need to also blacklist the JWT on the server side
         this.props.cookies.remove('auth', { path: '/' });
-        console.log(this.props.cookies);
-        AuthControl.user = null;
+        user.reset();
         AuthControl.isAuthenticated = false;
         this.props.history.push('/login');
     }

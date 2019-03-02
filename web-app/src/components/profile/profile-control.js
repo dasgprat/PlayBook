@@ -3,23 +3,25 @@ import ProfileView from './profile-view';
 import AuthControl from '../auth/auth-control';
 import api from '../api-gateway';
 import { withRouter } from 'react-router-dom';
+import user from '../../model/user.model';
 
 class Profile extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            user: AuthControl.user
+            user: user.get()
         };
 
         this.onSave = this.onSave.bind(this);
     }
 
     onSave(values) {
-        api.patch(`/users/${AuthControl.user.id}`, values, (err, res) => {
+        api.patch(`/users/${this.state.user.id}`, values, (err, res) => {
             if (err) return console.log(err);
-            AuthControl.user = res.content;
-            this.props.history.push('/home/' + AuthControl.user.username);
+            user.update(res.content);
+            this.setState({ user: user.get() });
+            this.props.history.push('/home/' + user.get().username);
         });
     }
 

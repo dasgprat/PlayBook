@@ -62,7 +62,6 @@ class PlaylistsController extends React.Component {
     componentDidMount() {
         if (this.state.username) {
             this.getPlaylists(this.state.username, (err, res) => {
-                console.log(res);
                 if (err) {
                     return this.setState({ playlists: [] });
                 }
@@ -77,7 +76,6 @@ class PlaylistsController extends React.Component {
             return <Redirect to={`/playlist`}/>;
         }
 
-        this.state.playlists.map(playlist => console.log(playlist));
         return (
             <div className={classes.root}>
                 <Grid container justify='center' alignItems="center" spacing={0}>

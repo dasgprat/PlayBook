@@ -1,6 +1,7 @@
 import React from 'react';
 import AuthView from './auth-view';
 import AuthControl from './auth-control';
+import user from '../../model/user.model';
 import { withRouter, Redirect } from 'react-router-dom';
 
 class Login extends React.Component {
@@ -44,7 +45,7 @@ class Login extends React.Component {
                 return this.setState({ error: err.message });
             }
             this.setState({ error: null });
-            this.props.history.push(`/home/${AuthControl.user.username}`);
+            this.props.history.push(`/home/${user.get().username}`);
         });
     }
 
@@ -52,7 +53,7 @@ class Login extends React.Component {
         if (this.state.loggedIn === true) {
             let pathname = this.props.location.state
                 ? this.props.location.state.from.pathname
-                : `/home/${AuthControl.user.username}`;
+                : `/home/${user.get().username}`;
             return <Redirect to={{ pathname }} />;
         } else if (this.state.loggedIn === false) {
             return (

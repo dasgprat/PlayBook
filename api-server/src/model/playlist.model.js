@@ -13,7 +13,7 @@ class Playlist {
         this.categories = props.categories;
         this.links = props.links;
         this.personal = props.personal;
-        this.subscribedBy = props.subscribedBy;
+        this.subscribedBy = props.subscribedBy || [];
     }
 }
 
@@ -55,7 +55,7 @@ function find(query) {
 function findById(query) {
     logger.trace(`playlist id: ${query.id}`);
     return new Promise((resolve, reject) => {
-        db.findOne({_id: query.id})
+        db.findOne({ _id: query.id })
             .populate('author', 'id name')
             .populate('categories', 'id name')
             .lean()
@@ -67,18 +67,17 @@ function findById(query) {
     });
 }
 
-function deletePlaylistUser(query) {    
-    return new Promise((resolve,reject) => {
-       db.remove({ _id: query.id })
+function deletePlaylistUser(query) {
+    return new Promise((resolve, reject) => {
+        db.remove({ _id: query.id })
             .lean()
             .exec((err, res) => {
-                if (err) return reject(errors.translate(err, 'delete playlist'));                
-                logger.trace(JSON.stringify(res, null, 4));                
-                return resolve(JSON.stringify(res,null,4));
+                if (err) return reject(errors.translate(err, 'delete playlist'));
+                logger.trace(JSON.stringify(res, null, 4));
+                return resolve(JSON.stringify(res, null, 4));
             });
     });
 }
-
 
 module.exports = {
     Playlist,
@@ -86,5 +85,4 @@ module.exports = {
     findById,
     merge,
     deletePlaylistUser
-    
 };

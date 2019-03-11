@@ -15,6 +15,9 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Tooltip from '@material-ui/core/Tooltip';
 import AuthControl from '../auth/auth-control';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableRow from '@material-ui/core/TableRow';
 
 const styles = theme => ({    
     content: {
@@ -69,8 +72,7 @@ class Playlist extends React.Component {
     }
 
     getPlaylist(id, callback) {
-        //console.log(`view: /playlist/${id}`);
-        api.get(`/playlist/${id}`, callback);
+        api.get(`/playlists/${id}`, callback);
     }
 
     updateDeleteState(url,playlistAuthor) {
@@ -152,7 +154,7 @@ class Playlist extends React.Component {
                                                 </IconButton>
                                             </Tooltip>
                                             <Tooltip title="Delete Playlist" aria-label="Delete">
-                                                <IconButton aria-label="Toggle password visibility" color="secondary" onClick={() => this.updateDeleteState(`/playlist/${playlist.id}`,`${playlist.author}`)}>
+                                                <IconButton aria-label="Toggle password visibility" color="secondary" onClick={() => this.updateDeleteState(`/playlists/${playlist.id}`,`${playlist.author}`)}>
                                                     <DeleteIcon /> 
                                                 </IconButton>
                                             </Tooltip>
@@ -170,7 +172,7 @@ class Playlist extends React.Component {
                                     </Grid>
                                     <Grid item xs={12}  className={classes.section2}>
                                         <Typography variant="subtitle1">
-                                            by { playlist.author }
+                                            by { playlist.author.name }
                                         </Typography>
                                     </Grid>
                                 </Grid>
@@ -190,17 +192,21 @@ class Playlist extends React.Component {
                             <Divider />
                             <div className={classes.section4}>                            
                                 <Grid container direction="column">
+                                <TableBody className={classes.section4}>
                                     {playlist.links.map((link,index) => (
-                                    <Paper className={classes.section4}>
+                                    <TableRow key={index}>
+                                    <TableCell component="th" scope="row" className={classes.section4}>
                                         <Grid key={index} item xs zeroMinWidth>                                            
-                                            <Typography color="primary" >
+                                            <Typography color="primary">
                                                 <a href={link}>
                                                     {link}
                                                 </a>
                                             </Typography>                                            
                                         </Grid>
-                                    </Paper>
-                                    ))}                                    
+                                    </TableCell>
+                                    </TableRow>
+                                    ))}
+                                </TableBody>                                    
                                 </Grid>                            
                             </div>
                             <Divider />    

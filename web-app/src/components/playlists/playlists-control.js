@@ -55,13 +55,14 @@ class PlaylistsController extends React.Component {
     }
 
     getPlaylists(username, callback) {
-        api.get(`/user/${username}/playlist`, callback);
+        api.get(`/playlists?username=${username}`, callback);
         // api.get(`/user/${username}/playlist/5c523fde15bf407420799e69`, callback);
     }
 
     componentDidMount() {
         if (this.state.username) {
             this.getPlaylists(this.state.username, (err, res) => {
+                console.log(res);
                 if (err) {
                     return this.setState({ playlists: [] });
                 }
@@ -76,6 +77,7 @@ class PlaylistsController extends React.Component {
             return <Redirect to={`/playlist`}/>;
         }
 
+        this.state.playlists.map(playlist => console.log(playlist));
         return (
             <div className={classes.root}>
                 <Grid container justify='center' alignItems="center" spacing={0}>

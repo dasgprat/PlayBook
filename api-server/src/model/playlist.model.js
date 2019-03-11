@@ -33,13 +33,16 @@ function merge(playlist) {
 }
 
 function find(query) {
+    logger.trace(JSON.stringify(query));
     return new Promise((resolve, reject) => {
         db.find({
             $or: [
-                {author: query.author},
+                {'author.username': query.author},
                 {subscribedBy: query.author}
             ]
         })
+            .populate('author', 'id name')
+            .populate('categories', 'id name')
             .lean()
             .exec((err, docs) => {
                 if (err) return reject(errors.translate(err, 'retrieve playlists'));
@@ -53,6 +56,8 @@ function findById(query) {
     logger.trace(`playlist id: ${query.id}`);
     return new Promise((resolve, reject) => {
         db.findOne({_id: query.id})
+            .populate('author', 'id name')
+            .populate('categories', 'id name')
             .lean()
             .exec((err, doc) => {
                 if (err) return reject(errors.translate(err, 'retrieve playlist information'));

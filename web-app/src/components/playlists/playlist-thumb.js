@@ -117,7 +117,7 @@ class PlaylistThumb extends React.Component {
                         </Grid>
                         <Grid item xs={12}>
                             <Typography variant="subtitle1">
-                                by { playlist.author }
+                                by { playlist.author.name }
                             </Typography>
                         </Grid>
                     </Grid>

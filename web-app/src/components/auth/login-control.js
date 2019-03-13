@@ -21,7 +21,7 @@ class Login extends React.Component {
 
     componentDidMount() {
         if (this.props.loggedIn === null) {
-            this.props.onVerifyAuthentication(this.props.username);
+            this.props.onVerifyAuthentication();
         }
     }
 
@@ -87,9 +87,9 @@ const mapDispatchToProps = (dispatch, { history }) => ({
             }
         ),
 
-    onVerifyAuthentication: username =>
+    onVerifyAuthentication: () =>
         dispatch(verifyAuthentication()).then(
-            () => getUserSubscriptions(dispatch, history, username),
+            ({ user }) => getUserSubscriptions(dispatch, history, user.username),
             err => console.log(err)
         )
 });

@@ -101,13 +101,17 @@ class PlaylistThumb extends React.Component {
                 <div className={classes.section1}>
                     <Grid container alignItems="center">
                         <Grid item container xs={12} justify="space-between" className={classes.subscribe}>
-                            <Grid item>
-                                <div>
-                                    <Typography color="primary" variant="subtitle1">
-                                        {playlist.personal == true ? 'Private' : 'Public'}
-                                    </Typography>
-                                </div>
-                            </Grid>
+                            {user.username == playlist.author.username ? (
+                                <Grid item>
+                                    <div>
+                                        <Typography color="primary" variant="subtitle1">
+                                            {playlist.personal == true ? 'Private' : 'Public'}
+                                        </Typography>
+                                    </div>
+                                </Grid>
+                            ) : (
+                                ''
+                            )}
                             <Grid item>
                                 <Button
                                     variant="outlined"

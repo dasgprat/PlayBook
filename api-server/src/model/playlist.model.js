@@ -34,26 +34,14 @@ function merge(playlist) {
 
 function generateSearchQuery(query, userId) {
     if (query && Object.keys(query).length > 0) {
-        // The user is searching for playlists
-        if (query.search && query.search.length > 0) {
+        if (query.suggest && query.suggest.length > 0) {
             return {
                 $or: [
                     {
                         $and: [
                             { personal: false },
                             { author: { $ne: userId } },
-                            {
-                                $or: [
-                                    { name: new RegExp(query.search, 'i') },
-                                    { categories: new RegExp(query.search, 'i') },
-                                    { description: new RegExp(query.search, 'i') }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        $and: [
-                            { author: userId },
+                            { subscribedBy: { $ne: userId } },
                             {
                                 $or: [
                                     { name: new RegExp(query.search, 'i') },
@@ -66,10 +54,42 @@ function generateSearchQuery(query, userId) {
                 ]
             };
         }
-        // The user wants to get all playlists subscribed by a user
-        if (query.subscribedBy && query.subscribedBy.length > 0) {
+
+        if (query.search && query.search.length > 0) {
             return {
-                subscribedBy: query.subscribedBy
+                $or: [
+                    {
+                        $and: [
+                            { personal: false },
+                            { author: { $ne: userId } },
+                            {
+                                $and: [
+                                    { personal: false },
+                                    { author: { $ne: userId } },
+                                    {
+                                        $or: [
+                                            { name: new RegExp(query.search, 'i') },
+                                            { categories: new RegExp(query.search, 'i') },
+                                            { description: new RegExp(query.search, 'i') }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                $and: [
+                                    { author: userId },
+                                    {
+                                        $or: [
+                                            { name: new RegExp(query.search, 'i') },
+                                            { categories: new RegExp(query.search, 'i') },
+                                            { description: new RegExp(query.search, 'i') }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
             };
         }
     }
@@ -79,10 +99,11 @@ function generateSearchQuery(query, userId) {
 }
 
 function find(query, userId) {
+    // logger.trace("search query: " + JSON.stringify(generateSearchQuery(query, userId)));
     return new Promise((resolve, reject) => {
         db.find(generateSearchQuery(query, userId))
             .limit(20)
-            .populate('author', 'id name')
+            .populate('author', 'id name username')
             .populate('categories', 'id name')
             .lean()
             .exec((err, docs) => {
@@ -97,7 +118,7 @@ function findById(query) {
     logger.trace(`playlist id: ${query.id}`);
     return new Promise((resolve, reject) => {
         db.findOne({ _id: query.id })
-            .populate('author', 'id name')
+            .populate('author', 'id name username')
             .populate('categories', 'id name')
             .lean()
             .exec((err, doc) => {

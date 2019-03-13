@@ -18,6 +18,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import user from '../../model/user.model';
+import { connect } from 'react-redux';
 
 const styles = theme => ({
     content: {
@@ -142,48 +143,52 @@ class Playlist extends React.Component {
                             <Paper className={classes.content}>
                                 <div className={classes.section1}>
                                     <Grid container alignItems="center">
-                                        <Grid
-                                            item
-                                            container
-                                            xs={12}
-                                            justify="space-between"
-                                            className={classes.subscribe}
-                                        >
-                                            <Grid item>
-                                                <Tooltip title="Edit Playlist" aria-label="Edit">
-                                                    <IconButton
-                                                        aria-label="Toggle password visibility"
+                                        {user.username == playlist.author.username ? (
+                                            <Grid
+                                                item
+                                                container
+                                                xs={12}
+                                                justify="space-between"
+                                                className={classes.subscribe}
+                                            >
+                                                <Grid item>
+                                                    <Tooltip title="Edit Playlist" aria-label="Edit">
+                                                        <IconButton
+                                                            aria-label="Toggle password visibility"
+                                                            color="primary"
+                                                            onClick={() => this.updateRedirectState()}
+                                                        >
+                                                            <EditIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                    <Tooltip title="Delete Playlist" aria-label="Delete">
+                                                        <IconButton
+                                                            aria-label="Toggle password visibility"
+                                                            color="secondary"
+                                                            onClick={() =>
+                                                                this.updateDeleteState(
+                                                                    `/playlists/${playlist.id}`,
+                                                                    `${playlist.author}`
+                                                                )
+                                                            }
+                                                        >
+                                                            <DeleteIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </Grid>
+                                                <Grid item>
+                                                    <Typography
                                                         color="primary"
-                                                        onClick={() => this.updateRedirectState()}
+                                                        variant="subtitle1"
+                                                        className={classes.action}
                                                     >
-                                                        <EditIcon />
-                                                    </IconButton>
-                                                </Tooltip>
-                                                <Tooltip title="Delete Playlist" aria-label="Delete">
-                                                    <IconButton
-                                                        aria-label="Toggle password visibility"
-                                                        color="secondary"
-                                                        onClick={() =>
-                                                            this.updateDeleteState(
-                                                                `/playlists/${playlist.id}`,
-                                                                `${playlist.author}`
-                                                            )
-                                                        }
-                                                    >
-                                                        <DeleteIcon />
-                                                    </IconButton>
-                                                </Tooltip>
+                                                        {playlist.personal == true ? 'Private' : 'Public'}
+                                                    </Typography>
+                                                </Grid>
                                             </Grid>
-                                            <Grid item>
-                                                <Typography
-                                                    color="primary"
-                                                    variant="subtitle1"
-                                                    className={classes.action}
-                                                >
-                                                    {playlist.personal == true ? 'Private' : 'Public'}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
+                                        ) : (
+                                            ''
+                                        )}
                                         <Grid item xs={12} className={classes.section2}>
                                             <Typography variant="title">{playlist.name}</Typography>
                                         </Grid>
@@ -223,7 +228,55 @@ class Playlist extends React.Component {
                                                         >
                                                             <Grid key={index} item xs zeroMinWidth>
                                                                 <Typography color="primary">
-                                                                    <a href={link} target="_blank">{link}</a>
+                                                                    <a href={link}>{link}</a>
+                                                                </Typography>
+                                                            </Grid>
+                                                            <Grid item xs={12} className={classes.section2}>
+                                                                <Typography variant="subtitle1">
+                                                                    by {playlist.author.name}
+                                                                </Typography>
+                                                            </Grid>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </Grid>
+                                </div>
+                                <Divider />
+                                <div className={classes.section2}>
+                                    {playlist.categories.map(category => (
+                                        <Chip
+                                            key={category.name}
+                                            label={category.name}
+                                            className={classes.chip}
+                                            variant="outlined"
+                                        />
+                                    ))}
+                                </div>
+                                <Divider />
+                                <div className={classes.section3}>
+                                    <Typography color="textSecondary" className={classes.section3}>
+                                        {playlist.description}
+                                    </Typography>
+                                </div>
+                                <Divider />
+                                <div className={classes.section4}>
+                                    <Grid container direction="column">
+                                        <Table>
+                                            <TableBody className={classes.section4}>
+                                                {playlist.links.map((link, index) => (
+                                                    <TableRow key={index}>
+                                                        <TableCell
+                                                            component="th"
+                                                            scope="row"
+                                                            className={classes.section4}
+                                                        >
+                                                            <Grid key={index} item xs zeroMinWidth>
+                                                                <Typography color="primary">
+                                                                    <a href={link} target="_blank">
+                                                                        {link}
+                                                                    </a>
                                                                 </Typography>
                                                             </Grid>
                                                         </TableCell>
@@ -247,4 +300,8 @@ Playlist.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withRouter(withStyles(styles)(Playlist));
+const mapStateToProps = state => ({
+    user: state.user
+});
+
+export default connect(mapStateToProps)(withRouter(withStyles(styles)(Playlist)));

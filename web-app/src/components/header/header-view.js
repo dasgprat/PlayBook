@@ -18,32 +18,8 @@ import {
     IconButton
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-<<<<<<< HEAD
-
-const SearchBar = ({ classes, onSubmit, handleChange }) => (
-    <form onSubmit={onSubmit}>
-        <TextField
-            className={classes.searchBar}
-            id="searchInput"
-            name="search"
-            InputProps={{
-                endAdornment: (
-                    <InputAdornment position="end">
-                        <SearchIcon />
-                    </InputAdornment>
-                ),
-                disableUnderline: true,
-                className: classes.searchInput,
-                placeholder: 'Search Playlists'
-            }}
-            onChange={handleChange}
-        />
-    </form>
-);
-=======
 import SearchBar from "./search-bar";
 
->>>>>>> 457cf214dda2b1fc1bd462714f410860c5357d77
 
 class HeaderView extends React.Component {
     constructor(props) {
@@ -74,19 +50,11 @@ class HeaderView extends React.Component {
         return (
             <div className={classes.header}>
                 <div className={classes.logoIcon}>
-<<<<<<< HEAD
-                    <Link to={`/home/${user.get().username}`} className={classes.link}>
-                        <Button>PlayBook</Button>
-                    </Link>
-                </div>
-                <SearchBar classes={classes} handleChange={this.handleChange} onSubmit={this.onSearchSubmit} />
-=======
                     <Link to={`/home/${AuthControl.user.username}`} className={classes.link}>
                         <Button>PlayBook</Button>                 
                     </Link> 
                 </div>               
                 <SearchBar classes={classes} />
->>>>>>> 457cf214dda2b1fc1bd462714f410860c5357d77
                 <div className={classes.profileAvatarWrapper}>
                     <IconButton
                         buttonRef={node => {

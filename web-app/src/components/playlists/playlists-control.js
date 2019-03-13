@@ -48,18 +48,7 @@ class PlaylistsController extends React.Component {
     }
 
     componentDidMount() {
-<<<<<<< HEAD
-        if (this.state.username) {
-            this.getPlaylists(this.state.username, (err, res) => {
-                if (err) {
-                    return this.setState({ playlists: [] });
-                }
-                return this.setState({ playlists: res });
-            });
-        }
-=======
         this.props.fetchPlaylists();
->>>>>>> 457cf214dda2b1fc1bd462714f410860c5357d77
     }
 
     render() {

@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Button, IconButton } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { subscribeToPlaylist, unsubscribeFromPlaylist } from '../actions/playlists';
+import { subscribeToPlaylist, unsubscribeFromPlaylist, likePlaylist, unlikePlaylist } from '../actions/playlists';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
-import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import UnsubscribeIcon from '@material-ui/icons/Unsubscribe';
 
 const styles = theme => ({
@@ -22,6 +21,8 @@ class SubscribeButton extends Component {
 
         this.onSubscribe = this.onSubscribe.bind(this);
         this.onUnsubscribe = this.onUnsubscribe.bind(this);
+        this.onLikeClick = this.onLikeClick.bind(this);
+        this.onUnlikeClick = this.onUnlikeClick.bind(this);
     }
 
     onSubscribe() {
@@ -32,8 +33,16 @@ class SubscribeButton extends Component {
         this.props.onUnsubscribe(this.props.playlistId);
     }
 
+    onLikeClick() {
+        this.props.onLike(this.props.playlistId);
+    }
+
+    onUnlikeClick() {
+        this.props.onUnlike(this.props.playlistId);
+    }
+
     render() {
-        const { classes, userId, authorId, subscribed } = this.props;
+        const { classes, userId, authorId, subscribed, liked } = this.props;
 
         if (userId === authorId) return '';
 
@@ -43,12 +52,15 @@ class SubscribeButton extends Component {
             </Button>
         ) : (
             <div className={[classes.root, classes.button]}>
-                <IconButton>
-                    <ThumbUpIcon />
-                </IconButton>
-                <IconButton>
-                    <ThumbDownIcon />
-                </IconButton>
+                {liked ? (
+                    <IconButton color="primary" onClick={this.onUnlikeClick}>
+                        <ThumbUpIcon />
+                    </IconButton>
+                ) : (
+                    <IconButton onClick={this.onLikeClick}>
+                        <ThumbUpIcon />
+                    </IconButton>
+                )}
                 <IconButton onClick={this.onUnsubscribe}>
                     <UnsubscribeIcon />
                 </IconButton>
@@ -66,14 +78,17 @@ SubscribeButton.propTypes = {
 };
 
 const mapStateToProps = (state, props) => ({
+    ...props,
     userId: state.user.id,
     subscribed: state.subscriptions.includes(props.playlistId),
-    ...props
+    liked: state.liked.includes(props.playlistId)
 });
 
 const mapDispatchToProps = dispatch => ({
     onSubscribe: playlistId => dispatch(subscribeToPlaylist(playlistId)).catch(console.log),
-    onUnsubscribe: playlistId => dispatch(unsubscribeFromPlaylist(playlistId)).catch(console.log)
+    onUnsubscribe: playlistId => dispatch(unsubscribeFromPlaylist(playlistId)).catch(console.log),
+    onLike: playlistId => dispatch(likePlaylist(playlistId)).catch(console.log),
+    onUnlike: playlistId => dispatch(unlikePlaylist(playlistId)).catch(console.log)
 });
 
 export default connect(

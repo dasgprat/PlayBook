@@ -3,7 +3,7 @@ import AuthView from './auth-view';
 import { withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { authenticateUser, verifyAuthentication } from '../actions/user';
-import { fetchSubscriptions } from '../actions/playlists';
+import { fetchSubscriptions, fetchLikedPlaylists } from '../actions/playlists';
 
 class Login extends React.Component {
     constructor(properties) {
@@ -68,8 +68,8 @@ const mapStateToProps = (state, { location }) => ({
     error: state.error
 });
 
-const getUserSubscriptions = (dispatch, history, username) =>
-    dispatch(fetchSubscriptions()).then(
+const getUserLiked = (dispatch, history, username) =>
+    dispatch(fetchLikedPlaylists()).then(
         () => {
             history.push(`/home/${username}`);
         },
@@ -77,6 +77,9 @@ const getUserSubscriptions = (dispatch, history, username) =>
             console.log(err);
         }
     );
+
+const getUserSubscriptions = (dispatch, history, username) =>
+    dispatch(fetchSubscriptions()).then(getUserLiked(dispatch, history, username));
 
 const mapDispatchToProps = (dispatch, { history }) => ({
     onLogin: (username, password) =>

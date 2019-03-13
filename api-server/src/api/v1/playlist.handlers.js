@@ -12,7 +12,9 @@ module.exports = {
     getPlaylists,
     getPlaylist,
     subscribeToPlaylist,
-    unsubscribeFromPlaylist
+    unsubscribeFromPlaylist,
+    likePlaylist,
+    unlikePlaylist
 };
 
 async function addPlaylist(req, res) {
@@ -43,7 +45,7 @@ async function getPlaylists(req, res) {
         logger.trace(`Retrieving playlist for ${JSON.stringify(url_parts.query)}`);
         const user = await User.find({ username: req.user.sub });
         let playlists = await Playlist.find(url_parts.query, user.id);
-        if (url_parts.query.subscribedBy) {
+        if (url_parts.query.subscribedBy || url_parts.query.likedBy) {
             playlists = playlists.map(p => p.id);
         }
         return response.sendQueryResponse(res, status.OK, playlists);
@@ -97,7 +99,7 @@ async function subscribeToPlaylist(req, res) {
 
         playlists = playlists.map(p => p.id);
 
-        response.sendActionResponse(res, status.OK, 'Successfully subscribed to playlist', playlists);
+        response.sendActionResponse(res, status.CREATED, 'Successfully subscribed to playlist', playlists);
     } catch (err) {
         logger.error(err);
         return response.sendErrorResponse(res, err, 'subscribe to playlist');
@@ -123,5 +125,57 @@ async function unsubscribeFromPlaylist(req, res) {
     } catch (err) {
         logger.error(err);
         return response.sendErrorResponse(res, err, 'unsubscribe from playlist');
+    }
+}
+
+async function likePlaylist(req, res) {
+    try {
+        // Get the playlist
+        let pl = await Playlist.findById({ id: req.params.id });
+        if (!pl) return response.sendErrorResponse(res, status.NOT_FOUND, 'Failed to find playlist');
+
+        // Make sure the likers's id is valid
+        let userId = req.body.userId;
+        if (!userId) return response.sendErrorResponse(res, status.BAD_REQUEST, "Must provide user's id");
+        let user = await User.find({ id: userId });
+        if (!user) return response.sendErrorResponse(res, status.NOT_FOUND, 'Failed to find user to like playlist');
+
+        // Add the subscriber if they aren't already there
+        if (pl.likedBy.indexOf(user.id) < 0) pl.likedBy.push(user.id);
+
+        // Save the changes
+        await Playlist.merge(pl);
+
+        // Get all of the playlists that the user has subscribed to
+        let playlists = await Playlist.findPlaylistsLikedByUser(user.id);
+
+        playlists = playlists.map(p => p.id);
+
+        response.sendActionResponse(res, status.CREATED, 'Successfully liked playlist', playlists);
+    } catch (err) {
+        logger.error(err);
+        return response.sendErrorResponse(res, err, 'like playlist');
+    }
+}
+
+async function unlikePlaylist(req, res) {
+    try {
+        // Get the playlist
+        let pl = await Playlist.findById({ id: req.params.pid });
+        if (!pl) return response.sendErrorResponse(res, status.NOT_FOUND, 'Failed to find playlist');
+
+        // Remove the user that likes the playlist from the list of likers
+        pl.likedBy = pl.likedBy.filter(id => id !== req.params.uid);
+        await Playlist.merge(pl);
+
+        // Get the users new playlists
+        let playlists = await Playlist.findPlaylistsLikedByUser(req.params.uid);
+
+        playlists = playlists.map(p => p.id);
+
+        return response.sendActionResponse(res, status.OK, 'Successfully unliked playlist', playlists);
+    } catch (err) {
+        logger.error(err);
+        return response.sendErrorResponse(res, err, 'unlike playlist');
     }
 }

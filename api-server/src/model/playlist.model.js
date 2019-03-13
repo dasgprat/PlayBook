@@ -14,6 +14,7 @@ class Playlist {
         this.links = props.links;
         this.personal = props.personal;
         this.subscribedBy = props.subscribedBy || [];
+        this.likedBy = props.likedBy || [];
     }
 }
 
@@ -93,13 +94,20 @@ function generateSearchQuery(query, userId) {
             };
         }
     }
+
+    if (query.subscribedBy && query.subscribedBy.length > 0) {
+        return { subscribedBy: userId };
+    }
+
+    if (query.likedBy && query.likedBy.length > 0) {
+        return { likedBy: userId };
+    }
     return {
         $or: [{ author: userId }, { subscribedBy: userId }]
     };
 }
 
 function find(query, userId) {
-    // logger.trace("search query: " + JSON.stringify(generateSearchQuery(query, userId)));
     return new Promise((resolve, reject) => {
         db.find(generateSearchQuery(query, userId))
             .limit(20)
@@ -152,11 +160,23 @@ function findSubscribedPlaylistsForUser(userId) {
     });
 }
 
+function findPlaylistsLikedByUser(userId) {
+    return new Promise((resolve, reject) => {
+        db.find({ likedBy: userId })
+            .lean()
+            .exec((err, docs) => {
+                if (err) return reject(errors.translate(err, 'retrieve liked playlists'));
+                return resolve(docs.map(doc => new Playlist(doc)));
+            });
+    });
+}
+
 module.exports = {
     Playlist,
     find,
     findById,
     merge,
     deletePlaylistUser,
-    findSubscribedPlaylistsForUser
+    findSubscribedPlaylistsForUser,
+    findPlaylistsLikedByUser
 };

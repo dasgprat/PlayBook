@@ -10,7 +10,16 @@ import {
     FETCH_SUBSCRIPTIONS_SUCCESS,
     UNSUBSCRIBE_FROM_PLAYLIST_REQUEST,
     UNSUBSCRIBE_FROM_PLAYLIST_SUCCESS,
-    UNSUBSCRIBE_FROM_PLAYLIST_FAILURE
+    UNSUBSCRIBE_FROM_PLAYLIST_FAILURE,
+    LIKE_PLAYLIST_REQUEST,
+    FETCH_LIKED_PLAYLISTS_REQUEST,
+    UNLIKE_PLAYLIST_REQUEST,
+    LIKE_PLAYLIST_FAILURE,
+    UNLIKE_PLAYLIST_FAILURE,
+    FETCH_LIKED_PLAYLISTS_FAILURE,
+    LIKE_PLAYLIST_SUCCESS,
+    FETCH_LIKED_PLAYLISTS_SUCCESS,
+    UNLIKE_PLAYLIST_SUCCESS
 } from './actions/playlists';
 import {
     AUTHENTICATE_USER_REQUEST,
@@ -37,6 +46,7 @@ export const initialState = {
         username: null
     },
     subscriptions: [],
+    liked: [],
     error: null,
     isFetching: false,
     search: '',
@@ -54,17 +64,23 @@ export default (state = initialState, action) => {
         case SEARCH_PLAYLISTS_SUCCESS:
             return Object.assign({}, state, { playlists: action.playlists });
 
-        // Playlist Subscription
+        // Playlist Subscription and likes
         case SUBSCRIBE_TO_PLAYLIST_REQUEST:
         case FETCH_SUBSCRIPTIONS_REQUEST:
         case UNSUBSCRIBE_FROM_PLAYLIST_REQUEST:
+        case LIKE_PLAYLIST_REQUEST:
+        case FETCH_LIKED_PLAYLISTS_REQUEST:
+        case UNLIKE_PLAYLIST_REQUEST:
             return Object.assign({}, state, {
                 error: null,
                 isFetching: true
             });
         case SUBSCRIBE_TO_PLAYLIST_FAILURE:
         case FETCH_SUBSCRIPTIONS_FAILURE:
-        case UNSUBSCRIBE_FROM_PLAYLIST_REQUEST:
+        case UNSUBSCRIBE_FROM_PLAYLIST_FAILURE:
+        case LIKE_PLAYLIST_FAILURE:
+        case FETCH_LIKED_PLAYLISTS_FAILURE:
+        case UNLIKE_PLAYLIST_FAILURE:
             return Object.assign({}, state, {
                 error: action.error,
                 isFetching: false
@@ -76,6 +92,14 @@ export default (state = initialState, action) => {
                 subscriptions: action.subscriptions,
                 error: null,
                 isFetching: false
+            });
+        case LIKE_PLAYLIST_SUCCESS:
+        case FETCH_LIKED_PLAYLISTS_SUCCESS:
+        case UNLIKE_PLAYLIST_SUCCESS:
+            return Object.assign({}, state, {
+                error: null,
+                isFetching: false,
+                liked: action.liked
             });
 
         // User action reductions

@@ -16,4 +16,8 @@ playlist.post('/playlists/:id/subscribers', authorize, handler.subscribeToPlayli
 
 playlist.delete('/playlists/:pid/subscribers/:sid', authorize, handler.unsubscribeFromPlaylist);
 
+playlist.post('/playlists/:id/likes', authorize, handler.likePlaylist);
+
+playlist.delete('/playlists/:pid/likes/:uid', authorize, handler.unlikePlaylist);
+
 module.exports = playlist;

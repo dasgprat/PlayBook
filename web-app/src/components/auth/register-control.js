@@ -92,8 +92,8 @@ const mapStateToProps = (state, { location }) => ({
     location
 });
 
-const getUserSubscriptions = (dispatch, history, username) =>
-    dispatch(fetchSubscriptions()).then(
+const getUserLiked = (dispatch, history, username) =>
+    dispatch(fetchLikedPlaylists()).then(
         () => {
             history.push(`/home/${username}`);
         },
@@ -101,6 +101,9 @@ const getUserSubscriptions = (dispatch, history, username) =>
             console.log(err);
         }
     );
+
+const getUserSubscriptions = (dispatch, history, username) =>
+    dispatch(fetchSubscriptions()).then(getUserLiked(dispatch, history, username));
 
 const mapDispatchToProps = (dispatch, { history }) => ({
     onRegister: form =>

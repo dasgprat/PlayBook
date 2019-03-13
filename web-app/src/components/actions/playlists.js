@@ -165,3 +165,94 @@ export const unsubscribeFromPlaylist = playlistId => (dispatch, getState) => {
         });
     });
 };
+
+//
+// Liking to a playlist
+//
+export const LIKE_PLAYLIST_REQUEST = 'LIKE_PLAYLIST_REQUEST';
+const likePlaylistRequest = () => ({ type: LIKE_PLAYLIST_REQUEST });
+
+export const LIKE_PLAYLIST_SUCCESS = 'LIKE_PLAYLIST_SUCCESS';
+const likePlaylistSuccess = liked => ({ type: LIKE_PLAYLIST_SUCCESS, liked });
+
+export const LIKE_PLAYLIST_FAILURE = 'LIKE_PLAYLIST_FAILURE';
+const likePlaylistFailure = error => ({ type: LIKE_PLAYLIST_FAILURE, error });
+
+export const likePlaylist = playlistId => (dispatch, getState) => {
+    dispatch(likePlaylistRequest());
+
+    let userId = getState().user.id;
+
+    return new Promise((resolve, reject) => {
+        let body = { userId };
+        api.post(`/playlists/${playlistId}/likes`, body, (err, res) => {
+            if (err) {
+                dispatch(likePlaylistFailure(err.message));
+                return reject(err);
+            }
+
+            dispatch(likePlaylistSuccess(res.content));
+            return resolve(res);
+        });
+    });
+};
+
+//
+// Fetch the liked playlists
+//
+export const FETCH_LIKED_PLAYLISTS_REQUEST = 'FETCH_LIKED_PLAYLISTS_REQUEST';
+const fetchLikedPlaylistsRequest = () => ({ type: FETCH_LIKED_PLAYLISTS_REQUEST });
+
+export const FETCH_LIKED_PLAYLISTS_SUCCESS = 'FETCH_LIKED_PLAYLISTS_SUCCESS';
+const fetchLikedPlaylistsSuccess = liked => ({ type: FETCH_LIKED_PLAYLISTS_SUCCESS, liked });
+
+export const FETCH_LIKED_PLAYLISTS_FAILURE = 'FETCH_LIKED_PLAYLISTS_FAILURE';
+const fetchLikedPlaylistsFailure = error => ({ type: FETCH_LIKED_PLAYLISTS_FAILURE, error });
+
+export const fetchLikedPlaylists = () => (dispatch, getState) => {
+    dispatch(fetchLikedPlaylistsRequest());
+
+    let uid = getState().user.id;
+
+    return new Promise((resolve, reject) => {
+        api.get(`/playlists/?likedBy=${uid}`, (err, res) => {
+            if (err) {
+                dispatch(fetchLikedPlaylistsFailure(err.message));
+                return reject(err);
+            }
+
+            dispatch(fetchLikedPlaylistsSuccess(res));
+            return resolve(res);
+        });
+    });
+};
+
+//
+// Unlike from a playlist
+//
+export const UNLIKE_PLAYLIST_REQUEST = 'UNLIKE_PLAYLIST_REQUEST';
+const unlikePlaylistRequest = () => ({ type: UNLIKE_PLAYLIST_REQUEST });
+
+export const UNLIKE_PLAYLIST_SUCCESS = 'UNLIKE_PLAYLIST_SUCCESS';
+const unlikePlaylistSuccess = liked => ({ type: UNLIKE_PLAYLIST_SUCCESS, liked });
+
+export const UNLIKE_PLAYLIST_FAILURE = 'UNLIKE_PLAYLIST_FAILURE';
+const unlikePlaylistFailure = error => ({ type: UNLIKE_PLAYLIST_FAILURE, error });
+
+export const unlikePlaylist = playlistId => (dispatch, getState) => {
+    dispatch(unlikePlaylistRequest());
+
+    let uid = getState().user.id;
+
+    return new Promise((resolve, reject) => {
+        api.delete(`/playlists/${playlistId}/likes/${uid}`, (err, res) => {
+            if (err) {
+                dispatch(unlikePlaylistFailure(err.message));
+                return reject(err);
+            }
+
+            dispatch(unlikePlaylistSuccess(res.content));
+            return resolve(res);
+        });
+    });
+};

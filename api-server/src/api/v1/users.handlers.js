@@ -43,7 +43,12 @@ async function addNewUser(req, res) {
         logger.trace('Verifying user does not already exist');
         let user = await UserModel.find({ username: req.body.username });
         if (user !== undefined) {
-            return response.sendActionResponse(res, status.CONFLICT, 'User already exists', user);
+            return response.sendActionResponse(
+                res,
+                status.CONFLICT,
+                'User with provided username already exists',
+                user
+            );
         }
         logger.trace('Adding new user with username ' + req.body.username);
         user = await UserModel.merge(new UserModel.User(req.body));
@@ -165,6 +170,6 @@ async function removeUserExperience(req, res) {
         return response.sendActionResponse(res, status.OK, 'Successfully removed experience', user.skills.experienced);
     } catch (err) {
         logger.error(err);
-        return response.sendErrorResponse(re.err, 'remove user experience');
+        return response.sendErrorResponse(res, err, 'remove user experience');
     }
 }

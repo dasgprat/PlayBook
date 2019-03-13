@@ -33,39 +33,48 @@ function merge(playlist) {
 }
 
 function generateSearchQuery(query, userId) {
-    return (query && Object.keys(query).length > 0 && "search" in query && query.search.length > 0) ? {
-        $or: [
-            {
-                $and: [
-                    { "personal": false },
-                    { "author": { $ne: userId } },
+    if (query && Object.keys(query).length > 0) {
+        // The user is searching for playlists
+        if (query.search && query.search.length > 0) {
+            return {
+                $or: [
                     {
-                        $or: [
-                            { "name": new RegExp(query.search, "i") },
-                            { "categories": new RegExp(query.search, "i") },
-                            { "description": new RegExp(query.search, "i") }
+                        $and: [
+                            { personal: false },
+                            { author: { $ne: userId } },
+                            {
+                                $or: [
+                                    { name: new RegExp(query.search, 'i') },
+                                    { categories: new RegExp(query.search, 'i') },
+                                    { description: new RegExp(query.search, 'i') }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        $and: [
+                            { author: userId },
+                            {
+                                $or: [
+                                    { name: new RegExp(query.search, 'i') },
+                                    { categories: new RegExp(query.search, 'i') },
+                                    { description: new RegExp(query.search, 'i') }
+                                ]
+                            }
                         ]
                     }
                 ]
-            },
-            {
-                $and: [
-                    { "author": userId },
-                    {
-                        $or: [
-                            {"name": new RegExp(query.search, "i") },
-                            {"categories": new RegExp(query.search, "i") },
-                            {"description": new RegExp(query.search, "i") }
-                        ]
-                    }
-                ]
-            }
-        ]
-    } :  {
-        $or: [
-            { "author": userId },
-            { "subscribedBy": userId }
-        ]
+            };
+        }
+        // The user wants to get all playlists subscribed by a user
+        if (query.subscribedBy && query.subscribedBy.length > 0) {
+            return {
+                subscribedBy: query.subscribedBy
+            };
+        }
+    }
+    return {
+        $or: [{ author: userId }, { subscribedBy: userId }]
     };
 }
 
@@ -111,10 +120,22 @@ function deletePlaylistUser(query) {
     });
 }
 
+function findSubscribedPlaylistsForUser(userId) {
+    return new Promise((resolve, reject) => {
+        db.find({ subscribedBy: userId })
+            .lean()
+            .exec((err, docs) => {
+                if (err) return reject(errors.translate(err, 'retrieve subscribed playlists'));
+                return resolve(docs.map(doc => new Playlist(doc)));
+            });
+    });
+}
+
 module.exports = {
     Playlist,
     find,
     findById,
     merge,
-    deletePlaylistUser
+    deletePlaylistUser,
+    findSubscribedPlaylistsForUser
 };

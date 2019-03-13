@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import user from '../../model/user.model';
 import { Redirect, withRouter } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -21,6 +20,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
+import { connect } from 'react-redux';
 
 const styles = theme => {
     return {
@@ -263,7 +263,7 @@ class PlaylistForm extends React.Component {
         let playlist = {
             id: this.state.id,
             name: this.state.name,
-            author: user.get().id,
+            author: this.props.user.id,
             categories: this.state.categories.map(category => {
                 return {
                     id: category.value,
@@ -373,4 +373,8 @@ PlaylistForm.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withRouter(withStyles(styles)(PlaylistForm));
+const mapStateToProps = state => ({
+    user: state.user
+});
+
+export default connect(mapStateToProps)(withRouter(withStyles(styles)(PlaylistForm)));

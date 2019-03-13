@@ -1,34 +1,46 @@
 import React from 'react';
 import ProfileView from './profile-view';
-import AuthControl from '../auth/auth-control';
-import api from '../api-gateway';
 import { withRouter } from 'react-router-dom';
-import user from '../../model/user.model';
+import { connect } from 'react-redux';
+import { updateUser } from '../actions/user';
 
 class Profile extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            user: user.get()
-        };
-
         this.onSave = this.onSave.bind(this);
     }
 
     onSave(values) {
-        api.patch(`/users/${this.state.user.id}`, values, (err, res) => {
-            if (err) return console.log(err);
-            user.update(res.content);
-            this.setState({ user: user.get() });
-            this.props.history.push('/home/' + user.get().username);
-        });
+        this.props.onSave(values, this.props.user.username);
     }
 
     render() {
-        const { match } = this.props;
-        return <ProfileView match={match} onSave={this.onSave} user={this.state.user} />;
+        const { match, user } = this.props;
+        return <ProfileView match={match} onSave={this.onSave} user={user} />;
     }
 }
 
-export default withRouter(Profile);
+const mapStateToProps = (state, { match }) => ({
+    user: state.user,
+    match
+});
+
+const mapDispatchToProps = (dispatch, { history }) => ({
+    onSave: (values, username) =>
+        dispatch(updateUser(values)).then(
+            () => {
+                history.push(`/home/${username}`);
+            },
+            err => {
+                console.log(err);
+            }
+        )
+});
+
+export default withRouter(
+    connect(
+        mapStateToProps,
+        mapDispatchToProps
+    )(Profile)
+);

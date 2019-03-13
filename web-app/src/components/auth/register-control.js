@@ -1,7 +1,9 @@
 import React from 'react';
 import AuthView from './auth-view';
-import AuthControl from './auth-control';
 import { withRouter, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { registerUser, verifyAuthentication } from '../actions/user';
+import { fetchSubscriptions } from '../actions/playlists';
 
 class RegisterController extends React.Component {
     constructor(props) {
@@ -12,9 +14,7 @@ class RegisterController extends React.Component {
             email: '',
             age: null,
             username: '',
-            password: '',
-            error: null,
-            loggedIn: null
+            password: ''
         };
 
         this.onNameChange = this.onNameChange.bind(this);
@@ -26,12 +26,7 @@ class RegisterController extends React.Component {
     }
 
     componentDidMount() {
-        AuthControl.verify(err => {
-            if (err) {
-                return this.setState({ loggedIn: false });
-            }
-            this.setState({ loggedIn: true });
-        });
+        this.props.verifyAuthentication(this.props.username);
     }
 
     onNameChange(event) {
@@ -57,22 +52,22 @@ class RegisterController extends React.Component {
     onLoginFormSubmit(event) {
         event.stopPropagation();
         event.preventDefault();
-        AuthControl.register(this.state, (err, res) => {
-            if (err) {
-                return this.setState({ error: err.message });
-            }
-            this.setState({ error: null });
-            this.props.history.push(`/home/${user.get().username}`);
+        this.props.onRegister({
+            username: this.state.username,
+            password: this.state.password,
+            name: this.state.name,
+            email: this.state.email,
+            age: this.state.age
         });
     }
 
     render() {
-        if (this.state.loggedIn === true) {
-            let pathname = this.props.location.state
-                ? this.props.location.state.from.pathname
-                : `/home/${user.get().username}`;
+        const { loggedIn, location, username, error } = this.props;
+
+        if (loggedIn === true) {
+            let pathname = location.state ? location.state.from.pathname : `/home/${username}`;
             return <Redirect to={{ pathname }} />;
-        } else if (this.state.loggedIn === false) {
+        } else if (loggedIn === false) {
             return (
                 <AuthView
                     action="register"
@@ -82,14 +77,46 @@ class RegisterController extends React.Component {
                     onAgeChange={this.onAgeChange}
                     onUsernameChange={this.onUsernameChange}
                     onPasswordChange={this.onPasswordChange}
-                    error={this.state.error}
+                    error={error}
                 />
             );
         } else {
             return <div />;
         }
-        
     }
 }
 
-export default withRouter(RegisterController);
+const mapStateToProps = (state, { location }) => ({
+    loggedIn: state.authenticated,
+    username: state.user.username,
+    location
+});
+
+const getUserSubscriptions = (dispatch, history, username) =>
+    dispatch(fetchSubscriptions()).then(
+        () => {
+            history.push(`/home/${username}`);
+        },
+        err => {
+            console.log(err);
+        }
+    );
+
+const mapDispatchToProps = (dispatch, { history }) => ({
+    onRegister: form =>
+        dispatch(registerUser(form)).then(getUserSubscriptions(dispatch, history, form.username), err => {
+            console.log(err);
+        }),
+
+    onVerifyAuthentication: username =>
+        dispatch(verifyAuthentication()).then(getUserSubscriptions(dispatch, history, username), err => {
+            console.log(err);
+        })
+});
+
+export default withRouter(
+    connect(
+        mapStateToProps,
+        mapDispatchToProps
+    )(RegisterController)
+);

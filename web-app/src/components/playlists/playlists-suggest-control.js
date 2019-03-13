@@ -11,7 +11,7 @@ import AddIcon from '@material-ui/icons/Add';
 import green from '@material-ui/core/colors/green';
 import classNames from 'classnames';
 import {connect} from "react-redux";
-import { suggestPlaylists } from "../actions";
+import { suggestPlaylists } from "../actions/playlists";
 
 const styles = theme => ({
     root: {

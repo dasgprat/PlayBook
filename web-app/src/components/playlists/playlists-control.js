@@ -6,10 +6,9 @@ import { withStyles } from "@material-ui/core/styles";
 import Grid from '@material-ui/core/Grid';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
-import green from '@material-ui/core/colors/green';
 import classNames from 'classnames';
 import {connect} from "react-redux";
-import { fetchPlaylists } from "../actions";
+import { fetchPlaylists } from "../actions/playlists";
 
 const styles = theme => ({
     root: {
@@ -83,7 +82,8 @@ class PlaylistsController extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    playlists: state.playlists
+    playlists: state.playlists,
+    user: state.user
 });
 
 const mapDispatchToProps = dispatch => ({

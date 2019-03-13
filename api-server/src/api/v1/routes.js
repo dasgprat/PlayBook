@@ -31,8 +31,11 @@ security.createPassportStrategy((err, strategy) => {
     apiRouter.use(prefix, playlist);
     apiRouter.use(prefix, category);
 
-    // All other routes should be protected and require a token
-    apiRouter.use(passport.authenticate('jwt', { session: false }));
+    // Error handling for any uncaught errors or errors thrown by middleware
+    apiRouter.use(prefix, (err, req, res, next) => {
+        console.log(err);
+        next(err);
+    });
 });
 
 module.exports = apiRouter;

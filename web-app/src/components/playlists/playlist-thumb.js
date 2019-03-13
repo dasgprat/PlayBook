@@ -16,8 +16,8 @@ import {
     LinkedinIcon,
     TwitterIcon
 } from 'react-share';
-import user from '../../model/user.model';
 import SubscribeButton from './playlist-subscribe';
+import { connect } from 'react-redux';
 
 const styles = theme => ({
     root: {
@@ -79,7 +79,7 @@ class PlaylistThumb extends React.Component {
     }
 
     render() {
-        const { classes, playlist, match } = this.props;
+        const { classes, playlist, user } = this.props;
 
         if (this.state.redirectToReferrer === true) {
             return <Redirect to={this.state.redirectTo} />;
@@ -168,7 +168,6 @@ class PlaylistThumb extends React.Component {
                     <SubscribeButton
                         playlistId={playlist.id}
                         authorId={playlist.author._id}
-                        userId={user.get().id}
                         classes={{ button: classes.buttonSubscribe }}
                     />
                 </div>
@@ -181,4 +180,11 @@ PlaylistThumb.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(PlaylistThumb);
+const mapStateToProps = state => ({
+    user: state.user
+});
+
+export default connect(
+    mapStateToProps,
+    null
+)(withStyles(styles)(PlaylistThumb));

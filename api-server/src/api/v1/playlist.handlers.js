@@ -1,7 +1,7 @@
 const Playlist = require('../../model/playlist.model');
 const Category = require('../../model/category.model');
 const response = require('./response');
-const User = require("../../model/user.model");
+const User = require('../../model/user.model');
 const status = require('http-status');
 const logger = require('winstonson')(module);
 const url = require('url');
@@ -42,6 +42,9 @@ async function getPlaylists(req, res) {
         logger.trace(`Retrieving playlist for ${JSON.stringify(url_parts.query)}`);
         const user = await User.find({ username: req.user.sub });
         let playlists = await Playlist.find(url_parts.query, user.id);
+        if (url_parts.query.subscribedBy) {
+            playlists = playlists.map(p => p.id);
+        }
         return response.sendQueryResponse(res, status.OK, playlists);
     } catch (err) {
         logger.error(err);
@@ -76,15 +79,24 @@ async function subscribeToPlaylist(req, res) {
         let pl = await Playlist.findById({ id: req.params.id });
         if (!pl) return response.sendErrorResponse(res, status.NOT_FOUND, 'Failed to find playlist');
 
-        // Add the subscriber if they aren't already there
+        // Make sure the subscriber's id is valid
         let subId = req.body.subscriberId;
         if (!subId) return response.sendErrorResponse(res, status.BAD_REQUEST, "Must provide subscriber's id");
-        if (pl.subscribedBy.indexOf(subId) < 0) pl.subscribedBy.push(subId);
+        let user = await User.find({ id: subId });
+        if (!user) return response.sendErrorResponse(res, status.NOT_FOUND, 'Failed to find subscriber');
+
+        // Add the subscriber if they aren't already there
+        if (pl.subscribedBy.indexOf(user.id) < 0) pl.subscribedBy.push(user.id);
 
         // Save the changes
         await Playlist.merge(pl);
 
-        response.sendActionResponse(res, status.OK, 'Successfully subscribed to playlist');
+        // Get all of the playlists that the user has subscribed to
+        let playlists = await Playlist.findSubscribedPlaylistsForUser(user.id);
+
+        playlists = playlists.map(p => p.id);
+
+        response.sendActionResponse(res, status.OK, 'Successfully subscribed to playlist', playlists);
     } catch (err) {
         logger.error(err);
         return response.sendErrorResponse(res, err, 'subscribe to playlist');

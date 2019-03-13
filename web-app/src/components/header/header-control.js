@@ -13,12 +13,7 @@ class Header extends React.Component {
             userImage: null
         };
 
-        this.onSearch = this.onSearch.bind(this);
         this.onLogout = this.onLogout.bind(this);
-    }
-
-    onSearch(query) {
-        console.log(query);
     }
 
     onLogout() {
@@ -32,7 +27,7 @@ class Header extends React.Component {
     render() {
         const { match } = this.props;
         return (
-            <HeaderView image={this.state.userImage} match={match} onSearch={this.onSearch} onLogout={this.onLogout} />
+            <HeaderView image={this.state.userImage} match={match} onLogout={this.onLogout} />
         );
     }
 }

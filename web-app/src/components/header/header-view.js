@@ -17,8 +17,8 @@ import {
     MenuList,
     IconButton
 } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
 import { Link } from 'react-router-dom';
+<<<<<<< HEAD
 
 const SearchBar = ({ classes, onSubmit, handleChange }) => (
     <form onSubmit={onSubmit}>
@@ -40,6 +40,10 @@ const SearchBar = ({ classes, onSubmit, handleChange }) => (
         />
     </form>
 );
+=======
+import SearchBar from "./search-bar";
+
+>>>>>>> 457cf214dda2b1fc1bd462714f410860c5357d77
 
 class HeaderView extends React.Component {
     constructor(props) {
@@ -50,20 +54,8 @@ class HeaderView extends React.Component {
             open: false
         };
 
-        this.handleChange = this.handleChange.bind(this);
-        this.onSearchSubmit = this.onSearchSubmit.bind(this);
         this.onProfileAvatarClick = this.onProfileAvatarClick.bind(this);
         this.onProfileMenuClose = this.onProfileMenuClose.bind(this);
-    }
-
-    handleChange(e) {
-        this.setState({ [e.target.name]: e.target.value });
-    }
-
-    onSearchSubmit(e) {
-        e.preventDefault();
-        this.props.onSearch(this.state.search);
-        return false;
     }
 
     onProfileAvatarClick(e) {
@@ -82,11 +74,19 @@ class HeaderView extends React.Component {
         return (
             <div className={classes.header}>
                 <div className={classes.logoIcon}>
+<<<<<<< HEAD
                     <Link to={`/home/${user.get().username}`} className={classes.link}>
                         <Button>PlayBook</Button>
                     </Link>
                 </div>
                 <SearchBar classes={classes} handleChange={this.handleChange} onSubmit={this.onSearchSubmit} />
+=======
+                    <Link to={`/home/${AuthControl.user.username}`} className={classes.link}>
+                        <Button>PlayBook</Button>                 
+                    </Link> 
+                </div>               
+                <SearchBar classes={classes} />
+>>>>>>> 457cf214dda2b1fc1bd462714f410860c5357d77
                 <div className={classes.profileAvatarWrapper}>
                     <IconButton
                         buttonRef={node => {

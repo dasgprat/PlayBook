@@ -1,6 +1,7 @@
 const Playlist = require('../../model/playlist.model');
 const Category = require('../../model/category.model');
 const response = require('./response');
+const User = require("../../model/user.model");
 const status = require('http-status');
 const logger = require('winstonson')(module);
 const url = require('url');
@@ -39,7 +40,8 @@ async function getPlaylists(req, res) {
     try {
         const url_parts = url.parse(req.url, true);
         logger.trace(`Retrieving playlist for ${JSON.stringify(url_parts.query)}`);
-        let playlists = await Playlist.find(url_parts.query);
+        const user = await User.find({ username: req.user.sub });
+        let playlists = await Playlist.find(url_parts.query, user.id);
         return response.sendQueryResponse(res, status.OK, playlists);
     } catch (err) {
         logger.error(err);

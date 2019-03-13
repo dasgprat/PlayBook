@@ -146,25 +146,26 @@ class Playlist extends React.Component {
                         <Paper className={classes.content}>
                             <div className={classes.section1}>
                                 <Grid container alignItems="center">
-                                    <Grid item container xs={12} justify="space-between" className={classes.subscribe}>
-                                        <Grid item>
-                                            <Tooltip title="Edit Playlist" aria-label="Edit">
-                                                <IconButton aria-label="Toggle password visibility" color="primary" onClick={() => this.updateRedirectState()}>
-                                                    <EditIcon /> 
-                                                </IconButton>
-                                            </Tooltip>
-                                            <Tooltip title="Delete Playlist" aria-label="Delete">
-                                                <IconButton aria-label="Toggle password visibility" color="secondary" onClick={() => this.updateDeleteState(`/playlists/${playlist.id}`,`${playlist.author}`)}>
-                                                    <DeleteIcon /> 
-                                                </IconButton>
-                                            </Tooltip>
-                                        </Grid>
-                                        <Grid item>
-                                            <Typography color="primary" variant ="subtitle1" className={classes.action}>
-                                                {playlist.personal==true ? "Private" : "Public"}
-                                            </Typography>
-                                        </Grid>                                        
-                                    </Grid>
+                                    {(AuthControl.user.username == playlist.author.username) ?
+                                        (<Grid item container xs={12} justify="space-between" className={classes.subscribe}>
+                                            <Grid item>
+                                                <Tooltip title="Edit Playlist" aria-label="Edit">
+                                                    <IconButton aria-label="Toggle password visibility" color="primary" onClick={() => this.updateRedirectState()}>
+                                                        <EditIcon />
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Tooltip title="Delete Playlist" aria-label="Delete">
+                                                    <IconButton aria-label="Toggle password visibility" color="secondary" onClick={() => this.updateDeleteState(`/playlists/${playlist.id}`,`${playlist.author}`)}>
+                                                        <DeleteIcon />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </Grid>
+                                            <Grid item>
+                                                <Typography color="primary" variant ="subtitle1" className={classes.action}>
+                                                    {playlist.personal==true ? "Private" : "Public"}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>) : ("")}
                                     <Grid item xs={12} className={classes.section2}>
                                         <Typography variant="title">
                                             { playlist.name }

@@ -33,7 +33,26 @@ function merge(playlist) {
 }
 
 function generateSearchQuery(query, userId) {
-    return (query && Object.keys(query).length > 0 && "search" in query && query.search.length > 0) ? {
+    const search = (query && Object.keys(query).length > 0 && "search" in query && query.search.length > 0) ? query.search : "";
+    const suggest = ("suggest" in query && query.suggest) ? query.suggest : false;
+    return (suggest || search.length > 0) ? (suggest ? {
+        $or: [
+            {
+                $and: [
+                    { "personal": false },
+                    { "author": { $ne: userId } },
+                    { "subscribedBy": { $ne: userId } },
+                    {
+                        $or: [
+                            { "name": new RegExp(query.search, "i") },
+                            { "categories": new RegExp(query.search, "i") },
+                            { "description": new RegExp(query.search, "i") }
+                        ]
+                    }
+                ]
+            }
+        ]
+    } : {
         $or: [
             {
                 $and: [
@@ -61,7 +80,7 @@ function generateSearchQuery(query, userId) {
                 ]
             }
         ]
-    } :  {
+    }) :  {
         $or: [
             { "author": userId },
             { "subscribedBy": userId }
@@ -70,10 +89,11 @@ function generateSearchQuery(query, userId) {
 }
 
 function find(query, userId) {
+    // logger.trace("search query: " + JSON.stringify(generateSearchQuery(query, userId)));
     return new Promise((resolve, reject) => {
         db.find(generateSearchQuery(query, userId))
             .limit(20)
-            .populate('author', 'id name')
+            .populate('author', 'id name username')
             .populate('categories', 'id name')
             .lean()
             .exec((err, docs) => {
@@ -88,7 +108,7 @@ function findById(query) {
     logger.trace(`playlist id: ${query.id}`);
     return new Promise((resolve, reject) => {
         db.findOne({_id: query.id})
-            .populate('author', 'id name')
+            .populate('author', 'id name username')
             .populate('categories', 'id name')
             .lean()
             .exec((err, doc) => {

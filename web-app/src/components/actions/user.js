@@ -79,14 +79,14 @@ export const VERIFY_AUTHENTICATION_SUCCESS = 'VERIFY_AUTHENTICATION_SUCCESS';
 const verifyAuthenticationSuccess = user => ({ type: VERIFY_AUTHENTICATION_SUCCESS, user });
 
 export const VERIFY_AUTHENTICATION_FAILURE = 'VERIFY_AUTHENTICATION_FAILURE';
-const verifyAuthenticationFailure = error => ({ type: AUTHENTICATE_USER_FAILURE, error });
+const verifyAuthenticationFailure = () => ({ type: VERIFY_AUTHENTICATION_FAILURE });
 
 export const verifyAuthentication = () => dispatch => {
     dispatch(verifyAuthenticationRequest());
     return new Promise((resolve, reject) => {
         api.get('/auth', (err, res) => {
             if (err) {
-                dispatch(verifyAuthenticationFailure(err.message));
+                dispatch(verifyAuthenticationFailure());
                 return reject(err);
             }
 
@@ -142,7 +142,7 @@ export const logoutUser = cookies => dispatch => {
     dispatch(logoutUserRequest());
     return new Promise((resolve, reject) => {
         cookies.remove('auth', { path: '/' });
-        dispatch(logoutUserSuccess);
+        dispatch(logoutUserSuccess());
         resolve();
     });
 };

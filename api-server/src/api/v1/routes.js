@@ -2,16 +2,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const apiRouter = express.Router();
-const passport = require('passport');
 const security = require('../../util/security');
 const users = require('./users.routes');
 const auth = require('./auth.routes');
 const playlist = require('./playlist.routes');
 const category = require('./category.routes');
 
-security.createPassportStrategy((err, strategy) => {
-    if (err) throw new Error('Failed to create passport strategy: ' + err.message);
-    passport.use(strategy);
+security.initializeAuthorization(err => {
+    if (err) throw new Error('Failed to initialize authorization: ' + err.message);
     apiRouter.use(bodyParser.json());
     apiRouter.use(cookieParser());
     apiRouter.use((req, res, next) => {
@@ -30,12 +28,6 @@ security.createPassportStrategy((err, strategy) => {
     apiRouter.use(prefix, users);
     apiRouter.use(prefix, playlist);
     apiRouter.use(prefix, category);
-
-    // Error handling for any uncaught errors or errors thrown by middleware
-    apiRouter.use(prefix, (err, req, res, next) => {
-        console.log(err);
-        next(err);
-    });
 });
 
 module.exports = apiRouter;

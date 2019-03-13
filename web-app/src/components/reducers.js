@@ -102,7 +102,6 @@ export default (state = initialState, action) => {
             });
         case VERIFY_AUTHENTICATION_FAILURE:
             return Object.assign({}, state, {
-                error: action.error,
                 isFetching: false,
                 authenticated: false
             });

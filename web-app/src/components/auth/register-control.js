@@ -2,8 +2,8 @@ import React from 'react';
 import AuthView from './auth-view';
 import { withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { registerUser, verifyAuthentication } from '../actions/user';
-import { fetchSubscriptions } from '../actions/playlists';
+import { registerUser, verifyAuthentication, authenticateUser } from '../actions/user';
+import { fetchSubscriptions, fetchLikedPlaylists } from '../actions/playlists';
 
 class RegisterController extends React.Component {
     constructor(props) {
@@ -26,7 +26,9 @@ class RegisterController extends React.Component {
     }
 
     componentDidMount() {
-        this.props.verifyAuthentication(this.props.username);
+        if (this.props.loggedIn == null) {
+            this.props.onVerifyAuthentication();
+        }
     }
 
     onNameChange(event) {
@@ -92,29 +94,33 @@ const mapStateToProps = (state, { location }) => ({
     location
 });
 
-const getUserLiked = (dispatch, history, username) =>
-    dispatch(fetchLikedPlaylists()).then(
-        () => {
-            history.push(`/home/${username}`);
-        },
-        err => {
-            console.log(err);
-        }
-    );
-
-const getUserSubscriptions = (dispatch, history, username) =>
-    dispatch(fetchSubscriptions()).then(getUserLiked(dispatch, history, username));
-
 const mapDispatchToProps = (dispatch, { history }) => ({
     onRegister: form =>
-        dispatch(registerUser(form)).then(getUserSubscriptions(dispatch, history, form.username), err => {
-            console.log(err);
-        }),
+        dispatch(registerUser(form)).then(
+            () => {
+                dispatch(authenticateUser(form.username, form.password)).then(
+                    () => {
+                        history.push(`/home/${form.username}`);
+                    },
+                    err => {
+                        console.log(err);
+                    }
+                );
+            },
+            err => {
+                console.log(err);
+            }
+        ),
 
-    onVerifyAuthentication: username =>
-        dispatch(verifyAuthentication()).then(getUserSubscriptions(dispatch, history, username), err => {
-            console.log(err);
-        })
+    onVerifyAuthentication: () =>
+        dispatch(verifyAuthentication()).then(
+            ({ user }) => {
+                history.push(`/home/${user.username}`);
+            },
+            err => {
+                console.log(err);
+            }
+        )
 });
 
 export default withRouter(

@@ -177,6 +177,8 @@ export default (state = initialState, action) => {
                     id: null,
                     username: null
                 },
+                subscriptions: [],
+                liked: [],
                 error: null,
                 isFetching: false
             });

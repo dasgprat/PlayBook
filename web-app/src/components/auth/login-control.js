@@ -3,7 +3,6 @@ import AuthView from './auth-view';
 import { withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { authenticateUser, verifyAuthentication } from '../actions/user';
-import { fetchSubscriptions, fetchLikedPlaylists } from '../actions/playlists';
 
 class Login extends React.Component {
     constructor(properties) {
@@ -68,23 +67,12 @@ const mapStateToProps = (state, { location }) => ({
     error: state.error
 });
 
-const getUserLiked = (dispatch, history, username) =>
-    dispatch(fetchLikedPlaylists()).then(
-        () => {
-            history.push(`/home/${username}`);
-        },
-        err => {
-            console.log(err);
-        }
-    );
-
-const getUserSubscriptions = (dispatch, history, username) =>
-    dispatch(fetchSubscriptions()).then(getUserLiked(dispatch, history, username));
-
 const mapDispatchToProps = (dispatch, { history }) => ({
     onLogin: (username, password) =>
         dispatch(authenticateUser(username, password)).then(
-            () => getUserSubscriptions(dispatch, history, username),
+            () => {
+                history.push(`/home/${username}`);
+            },
             err => {
                 console.log(err);
             }
@@ -92,8 +80,13 @@ const mapDispatchToProps = (dispatch, { history }) => ({
 
     onVerifyAuthentication: () =>
         dispatch(verifyAuthentication()).then(
-            ({ user }) => getUserSubscriptions(dispatch, history, user.username),
-            err => console.log(err)
+            ({ user }) => {
+                console.log(history);
+                history.push(`/home/${user.username}`);
+            },
+            err => {
+                console.log(err);
+            }
         )
 });
 

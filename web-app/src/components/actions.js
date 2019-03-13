@@ -63,7 +63,7 @@ export const suggestPlaylists = () => dispatch => {
     dispatch(suggestPlaylistsRequest());
 
     return new Promise((resolve, reject) => {
-        api.get(`/playlists?search=`, (err, res) => {
+        api.get(`/playlists?search=&suggest=true`, (err, res) => {
             if(err) {
                 dispatch(suggestPlaylistsFailure(err.message));
                 return reject(err);

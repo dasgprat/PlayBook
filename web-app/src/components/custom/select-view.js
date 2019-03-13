@@ -34,6 +34,7 @@ class SelectView extends Component {
         return (
             <AsyncSelect isMulti cacheOptions
                          className={classes.select}
+                         value={ defaultOptions }
                          defaultOptions={defaultOptions}
                          loadOptions={this.promiseOptions}
                          onChange={onOptionsChange} />

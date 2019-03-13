@@ -11,7 +11,8 @@ module.exports = {
     deletePlaylist,
     getPlaylists,
     getPlaylist,
-    subscribeToPlaylist
+    subscribeToPlaylist,
+    unsubscribeFromPlaylist
 };
 
 async function addPlaylist(req, res) {
@@ -100,5 +101,27 @@ async function subscribeToPlaylist(req, res) {
     } catch (err) {
         logger.error(err);
         return response.sendErrorResponse(res, err, 'subscribe to playlist');
+    }
+}
+
+async function unsubscribeFromPlaylist(req, res) {
+    try {
+        // Get the playlist
+        let pl = await Playlist.findById({ id: req.params.pid });
+        if (!pl) return response.sendErrorResponse(res, status.NOT_FOUND, 'Failed to find playlist');
+
+        // Remove the subscriber from the list of subscribers
+        pl.subscribedBy = pl.subscribedBy.filter(id => id !== req.params.sid);
+        await Playlist.merge(pl);
+
+        // Get the users new playlists
+        let playlists = await Playlist.findSubscribedPlaylistsForUser(req.params.sid);
+
+        playlists = playlists.map(p => p.id);
+
+        return response.sendActionResponse(res, status.OK, 'Successfully unsubscribed from playlist', playlists);
+    } catch (err) {
+        logger.error(err);
+        return response.sendErrorResponse(res, err, 'unsubscribe from playlist');
     }
 }

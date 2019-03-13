@@ -18,4 +18,10 @@ playlist.post(
     handler.subscribeToPlaylist
 );
 
+playlist.delete(
+    '/playlists/:pid/subscribers/:sid',
+    passport.authenticate('jwt', { session: false }),
+    handler.unsubscribeFromPlaylist
+);
+
 module.exports = playlist;

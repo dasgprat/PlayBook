@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Button, IconButton } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { subscribeToPlaylist } from '../actions/playlists';
+import { subscribeToPlaylist, unsubscribeFromPlaylist } from '../actions/playlists';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import UnsubscribeIcon from '@material-ui/icons/Unsubscribe';
@@ -21,10 +21,15 @@ class SubscribeButton extends Component {
         super(props);
 
         this.onSubscribe = this.onSubscribe.bind(this);
+        this.onUnsubscribe = this.onUnsubscribe.bind(this);
     }
 
     onSubscribe() {
-        this.props.onSubscribe(this.props.playlistId, this.props.userId);
+        this.props.onSubscribe(this.props.playlistId);
+    }
+
+    onUnsubscribe() {
+        this.props.onUnsubscribe(this.props.playlistId);
     }
 
     render() {
@@ -44,7 +49,7 @@ class SubscribeButton extends Component {
                 <IconButton>
                     <ThumbDownIcon />
                 </IconButton>
-                <IconButton>
+                <IconButton onClick={this.onUnsubscribe}>
                     <UnsubscribeIcon />
                 </IconButton>
             </div>
@@ -67,7 +72,8 @@ const mapStateToProps = (state, props) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    onSubscribe: (playlistId, userId) => dispatch(subscribeToPlaylist(playlistId, userId)).catch(console.log)
+    onSubscribe: playlistId => dispatch(subscribeToPlaylist(playlistId)).catch(console.log),
+    onUnsubscribe: playlistId => dispatch(unsubscribeFromPlaylist(playlistId)).catch(console.log)
 });
 
 export default connect(

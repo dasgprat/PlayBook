@@ -5,11 +5,12 @@ import {
     SUBSCRIBE_TO_PLAYLIST_REQUEST,
     SUBSCRIBE_TO_PLAYLIST_SUCCESS,
     SUBSCRIBE_TO_PLAYLIST_FAILURE,
-    FETCH_PLAYLISTS_REQUEST,
-    FETCH_PLAYLISTS_FAILURE,
     FETCH_SUBSCRIPTIONS_REQUEST,
     FETCH_SUBSCRIPTIONS_FAILURE,
-    FETCH_SUBSCRIPTIONS_SUCCESS
+    FETCH_SUBSCRIPTIONS_SUCCESS,
+    UNSUBSCRIBE_FROM_PLAYLIST_REQUEST,
+    UNSUBSCRIBE_FROM_PLAYLIST_SUCCESS,
+    UNSUBSCRIBE_FROM_PLAYLIST_FAILURE
 } from './actions/playlists';
 import {
     AUTHENTICATE_USER_REQUEST,
@@ -56,18 +57,21 @@ export default (state = initialState, action) => {
         // Playlist Subscription
         case SUBSCRIBE_TO_PLAYLIST_REQUEST:
         case FETCH_SUBSCRIPTIONS_REQUEST:
+        case UNSUBSCRIBE_FROM_PLAYLIST_REQUEST:
             return Object.assign({}, state, {
                 error: null,
                 isFetching: true
             });
         case SUBSCRIBE_TO_PLAYLIST_FAILURE:
         case FETCH_SUBSCRIPTIONS_FAILURE:
+        case UNSUBSCRIBE_FROM_PLAYLIST_REQUEST:
             return Object.assign({}, state, {
                 error: action.error,
                 isFetching: false
             });
         case SUBSCRIBE_TO_PLAYLIST_SUCCESS:
         case FETCH_SUBSCRIPTIONS_SUCCESS:
+        case UNSUBSCRIBE_FROM_PLAYLIST_SUCCESS:
             return Object.assign({}, state, {
                 subscriptions: action.subscriptions,
                 error: null,

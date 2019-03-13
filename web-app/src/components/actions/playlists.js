@@ -87,8 +87,10 @@ const subscribeToPlaylistSuccess = subscriptions => ({ type: SUBSCRIBE_TO_PLAYLI
 export const SUBSCRIBE_TO_PLAYLIST_FAILURE = 'SUBSCRIBE_TO_PLAYLIST_FAILURE';
 const subscribeToPlaylistFailure = error => ({ type: SUBSCRIBE_TO_PLAYLIST_FAILURE, error });
 
-export const subscribeToPlaylist = (playlistId, subscriberId) => dispatch => {
+export const subscribeToPlaylist = playlistId => (dispatch, getState) => {
     dispatch(subscribeToPlaylistRequest());
+
+    let subscriberId = getState().user.id;
 
     return new Promise((resolve, reject) => {
         let body = { subscriberId };
@@ -129,6 +131,36 @@ export const fetchSubscriptions = () => (dispatch, getState) => {
             }
 
             dispatch(fetchSubscriptionsSuccess(res));
+            return resolve(res);
+        });
+    });
+};
+
+//
+// Unsubsribe from a playlist
+//
+export const UNSUBSCRIBE_FROM_PLAYLIST_REQUEST = 'UNSUBSCRIBE_FROM_PLAYLIST_REQUEST';
+const unsubscribeFromPlaylistRequest = () => ({ type: UNSUBSCRIBE_FROM_PLAYLIST_REQUEST });
+
+export const UNSUBSCRIBE_FROM_PLAYLIST_SUCCESS = 'UNSUBSCRIBE_FROM_PLAYLIST_SUCCESS';
+const unsubscribeFromPlaylistSuccess = subscriptions => ({ type: UNSUBSCRIBE_FROM_PLAYLIST_SUCCESS, subscriptions });
+
+export const UNSUBSCRIBE_FROM_PLAYLIST_FAILURE = 'UNSUBSCRIBE_FROM_PLAYLIST_FAILURE';
+const unsubscribeFromPlaylistFailure = error => ({ type: UNSUBSCRIBE_FROM_PLAYLIST_FAILURE, error });
+
+export const unsubscribeFromPlaylist = playlistId => (dispatch, getState) => {
+    dispatch(unsubscribeFromPlaylistRequest());
+
+    let uid = getState().user.id;
+
+    return new Promise((resolve, reject) => {
+        api.delete(`/playlists/${playlistId}/subscribers/${uid}`, (err, res) => {
+            if (err) {
+                dispatch(unsubscribeFromPlaylistFailure(err.message));
+                return reject(err);
+            }
+
+            dispatch(unsubscribeFromPlaylistSuccess(res.content));
             return resolve(res);
         });
     });

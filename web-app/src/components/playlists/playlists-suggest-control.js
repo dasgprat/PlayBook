@@ -5,21 +5,23 @@ import {Redirect, withRouter} from 'react-router-dom';
 import { withStyles } from "@material-ui/core/styles";
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
-import api from "../api-gateway";
+import Grid from '@material-ui/core/Grid';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import green from '@material-ui/core/colors/green';
 import classNames from 'classnames';
 import {connect} from "react-redux";
 import { suggestPlaylists } from "../actions/playlists";
+import ListSubheader from '@material-ui/core/ListSubheader';
 
 const styles = theme => ({
     root: {
         display: 'flex',
         flexWrap: 'wrap',
-        justifyContent: 'space-around',
+        //justifyContent: 'space-around',
         // overflow: 'hidden',
         backgroundColor: theme.palette.background.paper,
+        margin: theme.spacing.unit,
     },
     control: {
         padding: theme.spacing.unit * 2,
@@ -71,13 +73,25 @@ class PlaylistsSuggestController extends React.Component {
 
         return (
             <div className={classes.root}>
-                <GridList className={classes.gridList}  cols={2.5}>
-                    {suggestions.map(playlist => (
-                        <GridListTile key={playlist.id} className={classes.tile}>
-                            <PlaylistThumb playlist={playlist}/>
-                        </GridListTile>
-                    ))}
-                </GridList>
+                <Grid container justify='center' alignItems="center" spacing={0}>
+                    <Grid item xs={false}>
+                        <Fab variant="extended" color="primary" aria-label="Add" className={classNames(classes.create, classes.cssRoot)}
+                                                onClick={() => this.updateRedirectState()}>
+                            <AddIcon className={classes.extendedIcon} />
+                            Create Playlist                                                            
+                        </Fab>                        
+                    </Grid>
+                </Grid> 
+                <Grid container spacing={0}>
+                    <ListSubheader color="inherit" className={classes.demo} component="div">Explore Playlists We Found For You</ListSubheader>       
+                    <GridList className={classes.gridList}  cols={2.5}>                                               
+                        {suggestions.map(playlist => (                        
+                            <GridListTile key={playlist.id} className={classes.tile}>
+                                <PlaylistThumb playlist={playlist}/>
+                            </GridListTile>
+                        ))}                
+                    </GridList>
+                </Grid>
             </div>
         );
     }

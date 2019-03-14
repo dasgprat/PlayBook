@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { subscribeToPlaylist, unsubscribeFromPlaylist, likePlaylist, unlikePlaylist } from '../actions/playlists';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import UnsubscribeIcon from '@material-ui/icons/Unsubscribe';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const styles = theme => ({
     button: {},
@@ -30,7 +31,7 @@ class SubscribeButton extends Component {
     }
 
     onUnsubscribe() {
-        this.props.onUnsubscribe(this.props.playlistId);
+        this.props.onUnsubscribe(this.props.playlistId);        
     }
 
     onLikeClick() {
@@ -61,9 +62,11 @@ class SubscribeButton extends Component {
                         <ThumbUpIcon />
                     </IconButton>
                 )}
+                <Tooltip title="Unsubscribe Playlist" aria-label="Unsubscribe">
                 <IconButton onClick={this.onUnsubscribe}>
                     <UnsubscribeIcon />
                 </IconButton>
+                </Tooltip>
             </div>
         );
     }

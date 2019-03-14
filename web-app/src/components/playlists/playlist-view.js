@@ -193,7 +193,7 @@ class Playlist extends React.Component {
                                             <Typography variant="title">{playlist.name}</Typography>
                                         </Grid>
                                         <Grid item xs={12} className={classes.section2}>
-                                            <Typography variant="subtitle1">by {user.username}</Typography>
+                                            <Typography variant="subtitle1">by {playlist.author.name}</Typography>
                                         </Grid>
                                     </Grid>
                                 </div>

@@ -147,7 +147,7 @@ class PlaylistThumb extends React.Component {
                         className={classes.share}
                         //url  = {`https://prateekdasgupta.me/playlist/${playlist.id}`}
                         url="https://prateekdasgupta.me/"
-                        quote={`View My Playlist ${playlist.name}`}
+                        quote={`View this Playlist ${playlist.name}`}
                         //hashtag={`${playlist.name}`}
                     >
                         <FacebookIcon size={32} round />
@@ -164,9 +164,8 @@ class PlaylistThumb extends React.Component {
                     <TwitterShareButton
                         //url  = {`https://prateekdasgupta.me/playlist/${playlist.id}`}
                         url="https://prateekdasgupta.me/"
-                        title={`View My Playlist ${playlist.name}`}
-                        className={classes.share}
-                    >
+                        title={`View this ${playlist.name}`}
+                        className={classes.share} >
                         <TwitterIcon size={32} round />
                     </TwitterShareButton>
                     <SubscribeButton

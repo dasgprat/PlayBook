@@ -1,9 +1,9 @@
 const express = require('express');
 const handler = require('./category.handlers');
-const passport = require('passport');
+const { authorize } = require('../../util/security');
 
 const category = express.Router();
 
-category.get('/categories/:name', passport.authenticate('jwt', { session: false }), handler.getCategories);
+category.get('/categories/:name', authorize, handler.getCategories);
 
 module.exports = category;

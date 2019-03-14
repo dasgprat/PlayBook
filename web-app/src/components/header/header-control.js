@@ -2,34 +2,45 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import HeaderView from './header-view';
 import { withCookies } from 'react-cookie';
-import AuthControl from '../auth/auth-control';
+import { connect } from 'react-redux';
+import { logoutUser } from '../actions/user';
 
 class Header extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            userImage: null
-        };
-
         this.onLogout = this.onLogout.bind(this);
     }
 
     onLogout() {
-        // TODO: for a more secure logout, we need to also blacklist the JWT on the server side
-        this.props.cookies.remove('auth', { path: '/' });
-        console.log(this.props.cookies);
-        AuthControl.user = null;
-        AuthControl.isAuthenticated = false;
-        this.props.history.push('/login');
+        this.props.onLogout(this.props.cookies);
     }
 
     render() {
-        const { match } = this.props;
-        return (
-            <HeaderView image={this.state.userImage} match={match} onLogout={this.onLogout} />
-        );
+        const { match, image, username } = this.props;
+        return <HeaderView username={username} image={image} match={match} onLogout={this.onLogout} />;
     }
 }
 
-export default withCookies(withRouter(Header));
+const mapStateToProps = (state, { cookies, match }) => ({
+    username: state.user.username,
+    image: state.user._links.avatar,
+    cookies,
+    match
+});
+
+const mapDispatchToProps = (dispatch, { history }) => ({
+    onLogout: cookies =>
+        dispatch(logoutUser(cookies)).then(() => {
+            history.push('/login');
+        })
+});
+
+export default withCookies(
+    withRouter(
+        connect(
+            mapStateToProps,
+            mapDispatchToProps
+        )(Header)
+    )
+);

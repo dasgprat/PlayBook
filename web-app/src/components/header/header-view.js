@@ -1,11 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import AuthControl from '../auth/auth-control';
 import styles from './header-styles';
 import {
-    TextField,
-    InputAdornment,
     Avatar,
     MenuItem,
     Popper,
@@ -45,11 +42,11 @@ class HeaderView extends React.Component {
     }
 
     render() {
-        const { classes, match, image, onLogout } = this.props;
+        const { classes, username, image, onLogout } = this.props;
         return (
             <div className={classes.header}>
                 <div className={classes.logoIcon}>
-                    <Link to={`/home/${AuthControl.user.username}`} className={classes.link}>
+                    <Link to={`/home/${username}`} className={classes.link}>
                         <Button>PlayBook</Button>                 
                     </Link> 
                 </div>               
@@ -77,7 +74,7 @@ class HeaderView extends React.Component {
                                 <Paper>
                                     <ClickAwayListener onClickAway={this.onProfileMenuClose}>
                                         <MenuList>
-                                            <Link className={classes.link} to={`/profile/${AuthControl.user.username}`}>
+                                            <Link className={classes.link} to={`/profile/${username}`}>
                                                 <MenuItem onClick={this.onProfileMenuClose}>Profile</MenuItem>
                                             </Link>
                                             <MenuItem onClick={onLogout}>Logout</MenuItem>

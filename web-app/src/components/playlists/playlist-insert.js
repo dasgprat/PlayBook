@@ -1,15 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import AuthControl from '../auth/auth-control';
-import {Redirect, withRouter} from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import Button from '@material-ui/core/Button';
-import api from "../api-gateway";
+import api from '../api-gateway';
 import FormControl from '@material-ui/core/FormControl';
-import SelectView from "../custom/select-view";
+import SelectView from '../custom/select-view';
 import TextField from '@material-ui/core/TextField';
 import Header from '../header/header-control';
 import { CssBaseline } from '@material-ui/core';
@@ -21,6 +20,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
+import { connect } from 'react-redux';
 
 const styles = theme => {
     return {
@@ -62,13 +62,13 @@ const styles = theme => {
             flexDirection: 'column',
             alignItems: 'center',
             padding: `${
-            theme.spacing.unit * 2 // Fix IE 11 issue.
-                }px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`
+                theme.spacing.unit * 2 // Fix IE 11 issue.
+            }px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`
         },
         avatar: { margin: theme.spacing.unit, backgroundColor: theme.palette.secondary.main },
         form: { width: '100%', marginTop: theme.spacing.unit },
         submit: { marginTop: theme.spacing.unit * 3 },
-        register: { paddingTop: theme.spacing.unit * 2 },        
+        register: { paddingTop: theme.spacing.unit * 2 }
     }; // Fix IE 11 issue.
 };
 
@@ -81,62 +81,67 @@ const LinkInput = ({ classes, name, value, onChange, onLinksAdd, autoFocus, numL
         variant="outlined"
         //multiline
         placeholder="Add Link"
-        onChange={onChange}        
+        onChange={onChange}
         autoFocus={autoFocus}
         InputProps={{
             endAdornment: (
-                <InputAdornment position="end">                
-                <Tooltip title="Add Link" aria-label="Add">
-                <IconButton aria-label="Toggle password visibility" color="primary" onClick={onLinksAdd}>
-                <AddIcon /> 
-                </IconButton>
-                </Tooltip>
+                <InputAdornment position="end">
+                    <Tooltip title="Add Link" aria-label="Add">
+                        <IconButton aria-label="Toggle password visibility" color="primary" onClick={onLinksAdd}>
+                            <AddIcon />
+                        </IconButton>
+                    </Tooltip>
                 </InputAdornment>
             )
         }}
     />
 );
 
-const LinkShow = ({ classes,onLinksDelete, linksList: links}) => (
-    <div className ={classes.form}>
-    {   links.length > 0 ? (
+const LinkShow = ({ classes, onLinksDelete, linksList: links }) => (
+    <div className={classes.form}>
+        {links.length > 0 ? (
             links.map((i, index) => (
-            <TextField        
-                className={classes.form}
-                key = {index}  
-                value={i}
-                variant="outlined"                
-                InputProps={{
-                    endAdornment: (
-                        <InputAdornment position="end">                                               
-                            <Tooltip title="Delete Link" aria-label="Delete">
-                                <IconButton aria-label="Toggle password visibility" onClick={() => onLinksDelete(i)}>
-                                    <DeleteIcon />                
-                                </IconButton> 
-                            </Tooltip>               
-                        </InputAdornment>
-                    )
-                }}
-            />
-    ))):(<Typography> </Typography>)}
+                <TextField
+                    className={classes.form}
+                    key={index}
+                    value={i}
+                    variant="outlined"
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <Tooltip title="Delete Link" aria-label="Delete">
+                                    <IconButton
+                                        aria-label="Toggle password visibility"
+                                        onClick={() => onLinksDelete(i)}
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </InputAdornment>
+                        )
+                    }}
+                />
+            ))
+        ) : (
+            <Typography> </Typography>
+        )}
     </div>
 );
 
 class PlaylistForm extends React.Component {
-
     constructor(props) {
         super(props);
 
         this.state = {
             id: this.props.match.params.id,
-            name: "",
+            name: '',
             categories: [],
-            description: "",
+            description: '',
             links: [],
             redirectToReferrer: false,
             categoryOptions: [],
             personal: false,
-            currentLinks: '',
+            currentLinks: ''
         };
 
         this.onNameChange = this.onNameChange.bind(this);
@@ -145,10 +150,10 @@ class PlaylistForm extends React.Component {
         this.onDescriptionChange = this.onDescriptionChange.bind(this);
         this.onLinksChange = this.onLinksChange.bind(this);
         this.onFormSubmit = this.onFormSubmit.bind(this);
-        this.onPrivacyChange = this.onPrivacyChange.bind(this);        
+        this.onPrivacyChange = this.onPrivacyChange.bind(this);
         this.handleLinksChange = this.handleLinksChange.bind(this);
         this.onLinksAdd = this.onLinksAdd.bind(this);
-        this.onLinksDelete = this.onLinksDelete.bind(this);        
+        this.onLinksDelete = this.onLinksDelete.bind(this);
     }
 
     onNameChange(event) {
@@ -159,9 +164,11 @@ class PlaylistForm extends React.Component {
         const exactOption = this.state.categoryOptions.filter(i => i.label.toLowerCase() === input.toLowerCase());
         let filterOptions = [];
         if (exactOption.length == 0 && input.trim().length > 0) {
-            filterOptions.push({value: input, label: input});
+            filterOptions.push({ value: input, label: input });
         }
-        filterOptions.push(...this.state.categoryOptions.filter(i => i.label.toLowerCase().includes(input.toLowerCase())));
+        filterOptions.push(
+            ...this.state.categoryOptions.filter(i => i.label.toLowerCase().includes(input.toLowerCase()))
+        );
 
         api.get(`/categories/${input}`, (err, res) => {
             if (err) {
@@ -174,8 +181,8 @@ class PlaylistForm extends React.Component {
                     return {
                         value: category.name,
                         label: category.name
-                    }
-                }),
+                    };
+                })
             });
         });
         return filterOptions;
@@ -195,31 +202,31 @@ class PlaylistForm extends React.Component {
     }
 
     onPrivacyChange(event) {
-        this.setState({personal: event.target.checked});
+        this.setState({ personal: event.target.checked });
     }
 
     getPlaylist(id, callback) {
         api.get(`/playlists/${id}`, callback);
     }
 
-    onAddLinksKeyPress(e) {        
+    onAddLinksKeyPress(e) {
         if (e.key === 'Enter') {
             this.setState({ links: [...this.state.links, this.state.currentLinks] });
-            this.state.currentLinks = "";
+            this.state.currentLinks = '';
         }
     }
-    handleLinksChange(e) {        
+    handleLinksChange(e) {
         this.setState({ [e.target.name]: e.target.value });
     }
-    
-    onLinksAdd(e){        
-        this.setState({ links: [...this.state.links, this.state.currentLinks] });        
-        this.state.currentLinks = "";
+
+    onLinksAdd(e) {
+        this.setState({ links: [...this.state.links, this.state.currentLinks] });
+        this.state.currentLinks = '';
     }
-    onLinksDelete(e){
-        this.setState({ links: this.state.links.filter(i => i !== e) });        
+    onLinksDelete(e) {
+        this.setState({ links: this.state.links.filter(i => i !== e) });
     }
-        
+
     componentDidMount() {
         if (this.state.id) {
             this.getPlaylist(this.state.id, (err, res) => {
@@ -232,17 +239,17 @@ class PlaylistForm extends React.Component {
                         return {
                             value: category.name,
                             label: category.name
-                        }
+                        };
                     }),
                     categoryOptions: res.categories.map(category => {
                         return {
                             value: category.name,
                             label: category.name
-                        }
+                        };
                     }),
                     description: res.description,
                     //links: res.links.length > 0 ? res.links.join('\n') : "",
-                    links: res.links.length > 0 ? res.links: "",
+                    links: res.links.length > 0 ? res.links : '',
                     personal: res.personal
                 });
             });
@@ -254,24 +261,24 @@ class PlaylistForm extends React.Component {
         event.stopPropagation();
         event.preventDefault();
         let playlist = {
-            id:   this.state.id,
+            id: this.state.id,
             name: this.state.name,
-            author: AuthControl.user.id,
+            author: this.props.user.id,
             categories: this.state.categories.map(category => {
                 return {
                     id: category.value,
                     name: category.label
-                }
+                };
             }),
             description: this.state.description,
             //links: this.state.links.length > 0 ? this.state.links.split('\n') : [],
-            links: this.state.links.length > 0 ? this.state.links: [],
+            links: this.state.links.length > 0 ? this.state.links : [],
             personal: this.state.personal,
             subscribedBy: []
         };
         api.post(`/playlists`, playlist, (err, res) => {
             if (err) console.log(err);
-            this.setState({id: res.content.id, redirectToReferrer: true});
+            this.setState({ id: res.content.id, redirectToReferrer: true });
         });
     }
 
@@ -280,26 +287,21 @@ class PlaylistForm extends React.Component {
         const redirectToReferrer = this.state.redirectToReferrer;
 
         if (redirectToReferrer === true) {
-            return <Redirect to={`/playlist/${this.state.id}`}/>;
+            return <Redirect to={`/playlist/${this.state.id}`} />;
         }
 
         return (
-            <div className={classes.root}>                
+            <div className={classes.root}>
                 <CssBaseline />
                 <div>
-                    <Header/>                
+                    <Header />
                 </div>
                 <main className={classes.main}>
                     <Paper className={classes.paper}>
                         <form className={classes.form} onSubmit={this.onFormSubmit}>
                             <FormControl margin="normal" required fullWidth>
                                 <InputLabel htmlFor="name">Playlist Name</InputLabel>
-                                <Input
-                                    id="name"
-                                    name="name"
-                                    value={this.state.name}
-                                    onChange={this.onNameChange}
-                                />
+                                <Input id="name" name="name" value={this.state.name} onChange={this.onNameChange} />
                             </FormControl>
                             <FormControlLabel
                                 control={
@@ -320,7 +322,8 @@ class PlaylistForm extends React.Component {
                                     className={classes.select}
                                     defaultOptions={this.state.categories}
                                     dataOptions={this.filterCategories}
-                                    onOptionsChange={this.onCategoriesChange} />
+                                    onOptionsChange={this.onCategoriesChange}
+                                />
                             </FormControl>
                             <FormControl margin="normal" required fullWidth>
                                 <InputLabel htmlFor="description">Description</InputLabel>
@@ -329,25 +332,33 @@ class PlaylistForm extends React.Component {
                                     name="description"
                                     multiline
                                     value={this.state.description}
-                                    onChange={this.onDescriptionChange} />
+                                    onChange={this.onDescriptionChange}
+                                />
                             </FormControl>
-                            
+
                             <FormControl margin="normal" fullWidth>
-                            <LinkInput
-                                    id= "currentLinks" name="currentLinks"
+                                <LinkInput
+                                    id="currentLinks"
+                                    name="currentLinks"
                                     label="currentLinks"
                                     classes={classes}
-                                    value= {this.state.currentLinks}                                    
+                                    value={this.state.currentLinks}
                                     onChange={this.handleLinksChange}
-                                    onLinksAdd={this.onLinksAdd}                                    
-                                    />
-                            <LinkShow
-                                classes={classes}
-                                linksList={this.state.links}
-                                onLinksDelete={this.onLinksDelete}                            
-                            />
-                            </FormControl>                            
-                            <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+                                    onLinksAdd={this.onLinksAdd}
+                                />
+                                <LinkShow
+                                    classes={classes}
+                                    linksList={this.state.links}
+                                    onLinksDelete={this.onLinksDelete}
+                                />
+                            </FormControl>
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="primary"
+                                className={classes.submit}
+                            >
                                 Apply
                             </Button>
                         </form>
@@ -362,4 +373,8 @@ PlaylistForm.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withRouter(withStyles(styles)(PlaylistForm));
+const mapStateToProps = state => ({
+    user: state.user
+});
+
+export default connect(mapStateToProps)(withRouter(withStyles(styles)(PlaylistForm)));

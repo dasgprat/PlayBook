@@ -4,7 +4,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import { connect } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import styles from './header-styles';
-import { searchPlaylists } from "../actions";
+import { searchPlaylists } from "../actions/playlists";
 
 import PropTypes from "prop-types";
 

@@ -6,6 +6,7 @@ import { CssBaseline } from '@material-ui/core';
 import Header from '../header/header-control';
 import PlaylistsSuggest from "../playlists/playlists-suggest-control";
 import Playlists from '../playlists/playlists-control';
+import Divider from '@material-ui/core/Divider';
 
 class HomeView extends React.Component {
     constructor(props) {
@@ -21,6 +22,7 @@ class HomeView extends React.Component {
                 <div>
                     <Header/>
                     <PlaylistsSuggest />
+                    <Divider/>
                     <Playlists />
                 </div>
                 

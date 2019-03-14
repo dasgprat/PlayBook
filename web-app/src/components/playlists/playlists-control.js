@@ -6,18 +6,21 @@ import { withStyles } from "@material-ui/core/styles";
 import Grid from '@material-ui/core/Grid';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
-import green from '@material-ui/core/colors/green';
 import classNames from 'classnames';
+import green from '@material-ui/core/colors/green';
 import {connect} from "react-redux";
-import { fetchPlaylists } from "../actions";
+import { fetchPlaylists } from "../actions/playlists";
+import ListSubheader from '@material-ui/core/ListSubheader';
+import { Typography } from '@material-ui/core';
 
 const styles = theme => ({
     root: {
-        flexGrow: 1,
+        //flexGrow: 1,
         margin: theme.spacing.unit,
-        //flexWrap: 'wrap',
+        flexWrap: 'wrap',
         //overflow: 'hidden',
-        //display: 'flex',
+        display: 'flex',
+        backgroundColor: theme.palette.background.paper,
         
     },
     control: {
@@ -30,7 +33,7 @@ const styles = theme => ({
         flexWrap: 'nowrap',        
         height: 369,        
         transform: 'translateZ(0)',
-    },
+    },   
 });
 
 class PlaylistsController extends React.Component {
@@ -56,34 +59,37 @@ class PlaylistsController extends React.Component {
         if (this.state.redirectToReferrer === true) {
             return <Redirect to={`/playlist`}/>;
         }
-
-        return (
-            <div className={classes.root}>
-                <Grid container justify='center' alignItems="center" spacing={0}>
-                    <Grid item xs={false}>
-                        <Fab variant="extended" color="primary" aria-label="Add" className={classNames(classes.create, classes.cssRoot)}
-                                                onClick={() => this.updateRedirectState()}>
-                            <AddIcon className={classes.extendedIcon} />
-                            Create Playlist                                                            
-                        </Fab>                        
-                    </Grid>
-                </Grid>
-                
-                <Grid container className={classes.root}  spacing={32}>
+        //console.log(Object.keys(playlists).length);
+        return (Object.keys(playlists).length == 1) ? (            
+            <div className={classes.root}>              
+                <Grid container className={classes.root}  spacing={32}>                    
                     {playlists.map(playlist => (
                         <Grid key={playlist.id} className={classes.demo} >
                             <PlaylistThumb playlist={playlist} />
                         </Grid>
                     ))}
-                </Grid>                
-                
+                </Grid>
+            </div>
+        ):(
+            <div className={classes.root}> 
+                <Grid key="playlist.header" className={classes.root} >
+                <ListSubheader color="inherit" className={classes.demo} component="div">Playlists By {this.state.username}</ListSubheader>                                
+                <Grid container className={classes.root}  spacing={32}>                    
+                    {playlists.map(playlist => (
+                        <Grid key={playlist.id} className={classes.demo}>
+                            <PlaylistThumb playlist={playlist} />
+                        </Grid>
+                    ))}
+                </Grid>
+                </Grid>
             </div>
         );
     }
 }
 
 const mapStateToProps = state => ({
-    playlists: state.playlists
+    playlists: state.playlists,
+    user: state.user
 });
 
 const mapDispatchToProps = dispatch => ({

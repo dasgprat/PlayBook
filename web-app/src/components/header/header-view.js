@@ -1,11 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import AuthControl from '../auth/auth-control';
 import styles from './header-styles';
 import {
-    TextField,
-    InputAdornment,
     Avatar,
     MenuItem,
     Popper,
@@ -16,31 +13,8 @@ import {
     MenuList,
     IconButton
 } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
 import { Link } from 'react-router-dom';
-
-
-const SearchBar = ({ classes, onSubmit, handleChange }) => (
-    <form onSubmit={onSubmit}>
-        <TextField
-            className={classes.searchBar}
-            id="searchInput"
-            name="search"
-            InputProps={{
-                endAdornment: (
-                    <InputAdornment position="end">
-                        <SearchIcon />
-                    </InputAdornment>
-                ),
-                disableUnderline: true,
-                className: classes.searchInput,
-                placeholder: 'Search Playlists'
-            }}
-            onChange={handleChange}
-        />
-    </form>
-);
-
+import SearchBar from "./search-bar";
 
 
 class HeaderView extends React.Component {
@@ -52,20 +26,8 @@ class HeaderView extends React.Component {
             open: false
         };
 
-        this.handleChange = this.handleChange.bind(this);
-        this.onSearchSubmit = this.onSearchSubmit.bind(this);
         this.onProfileAvatarClick = this.onProfileAvatarClick.bind(this);
         this.onProfileMenuClose = this.onProfileMenuClose.bind(this);
-    }
-
-    handleChange(e) {
-        this.setState({ [e.target.name]: e.target.value });
-    }
-
-    onSearchSubmit(e) {
-        e.preventDefault();
-        this.props.onSearch(this.state.search);
-        return false;
     }
 
     onProfileAvatarClick(e) {
@@ -80,15 +42,15 @@ class HeaderView extends React.Component {
     }
 
     render() {
-        const { classes, match, image, onLogout } = this.props;
+        const { classes, username, image, onLogout } = this.props;
         return (
             <div className={classes.header}>
                 <div className={classes.logoIcon}>
-                    <Link to={`/home/${AuthControl.user.username}`} className={classes.link}>
+                    <Link to={`/home/${username}`} className={classes.link}>
                         <Button>PlayBook</Button>                 
                     </Link> 
                 </div>               
-                <SearchBar classes={classes} handleChange={this.handleChange} onSubmit={this.onSearchSubmit} />
+                <SearchBar classes={classes} />
                 <div className={classes.profileAvatarWrapper}>
                     <IconButton
                         buttonRef={node => {
@@ -112,7 +74,7 @@ class HeaderView extends React.Component {
                                 <Paper>
                                     <ClickAwayListener onClickAway={this.onProfileMenuClose}>
                                         <MenuList>
-                                            <Link className={classes.link} to={`/profile/${AuthControl.user.username}`}>
+                                            <Link className={classes.link} to={`/profile/${username}`}>
                                                 <MenuItem onClick={this.onProfileMenuClose}>Profile</MenuItem>
                                             </Link>
                                             <MenuItem onClick={onLogout}>Logout</MenuItem>

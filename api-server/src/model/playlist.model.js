@@ -13,7 +13,8 @@ class Playlist {
         this.categories = props.categories;
         this.links = props.links;
         this.personal = props.personal;
-        this.subscribedBy = props.subscribedBy;
+        this.subscribedBy = props.subscribedBy || [];
+        this.likedBy = props.likedBy || [];
     }
 }
 
@@ -32,16 +33,88 @@ function merge(playlist) {
     });
 }
 
-function find(query) {
-    logger.trace(JSON.stringify(query));
+function generateSearchQuery(query, userId) {
+    if (query && Object.keys(query).length > 0) {
+        if (query.suggest && query.suggest.length > 0) {
+            return {
+                $or: [
+                    {
+                        $and: [
+                            { personal: false },
+                            { author: { $ne: userId } },
+                            { subscribedBy: { $ne: userId } },
+                            {
+                                $or: [
+                                    { name: new RegExp(query.search, 'i') },
+                                    { categories: new RegExp(query.search, 'i') },
+                                    { description: new RegExp(query.search, 'i') }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            };
+        }
+
+        if (query.search && query.search.length > 0) {
+            return {
+                $or: [
+                    {
+                        $and: [
+                            { personal: false },
+                            { author: { $ne: userId } },
+                            {
+                                $and: [
+                                    { personal: false },
+                                    { author: { $ne: userId } },
+                                    {
+                                        $or: [
+                                            { name: new RegExp(query.search, 'i') },
+                                            { categories: new RegExp(query.search, 'i') },
+                                            { description: new RegExp(query.search, 'i') }
+                                        ]
+                                    }
+                                ]
+                            }                            
+                        ]
+                    },
+                    {
+                        $and: [
+                            { author: userId },
+                            {
+                                $or: [
+                                    { name: new RegExp(query.search, 'i') },
+                                    { categories: new RegExp(query.search, 'i') },
+                                    { description: new RegExp(query.search, 'i') }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            };
+        }
+    }
+
+    if (query.subscribedBy && query.subscribedBy.length > 0) {
+        return { subscribedBy: userId };
+    }
+
+    if (query.likedBy && query.likedBy.length > 0) {
+        return { likedBy: userId };
+    }
+    return {
+        $or: [{ author: userId }, { subscribedBy: userId }]
+};
+
+
+    
+}
+
+function find(query, userId) {
     return new Promise((resolve, reject) => {
-        db.find({
-            $or: [
-                {'author.username': query.author},
-                {subscribedBy: query.author}
-            ]
-        })
-            .populate('author', 'id name')
+        db.find(generateSearchQuery(query, userId))
+            .limit(20)
+            .populate('author', 'id name username')
             .populate('categories', 'id name')
             .lean()
             .exec((err, docs) => {
@@ -55,8 +128,8 @@ function find(query) {
 function findById(query) {
     logger.trace(`playlist id: ${query.id}`);
     return new Promise((resolve, reject) => {
-        db.findOne({_id: query.id})
-            .populate('author', 'id name')
+        db.findOne({ _id: query.id })
+            .populate('author', 'id name username')
             .populate('categories', 'id name')
             .lean()
             .exec((err, doc) => {
@@ -67,24 +140,46 @@ function findById(query) {
     });
 }
 
-function deletePlaylistUser(query) {    
-    return new Promise((resolve,reject) => {
-       db.remove({ _id: query.id })
+function deletePlaylistUser(query) {
+    return new Promise((resolve, reject) => {
+        db.remove({ _id: query.id })
             .lean()
             .exec((err, res) => {
-                if (err) return reject(errors.translate(err, 'delete playlist'));                
-                logger.trace(JSON.stringify(res, null, 4));                
-                return resolve(JSON.stringify(res,null,4));
+                if (err) return reject(errors.translate(err, 'delete playlist'));
+                logger.trace(JSON.stringify(res, null, 4));
+                return resolve(JSON.stringify(res, null, 4));
             });
     });
 }
 
+function findSubscribedPlaylistsForUser(userId) {
+    return new Promise((resolve, reject) => {
+        db.find({ subscribedBy: userId })
+            .lean()
+            .exec((err, docs) => {
+                if (err) return reject(errors.translate(err, 'retrieve subscribed playlists'));
+                return resolve(docs.map(doc => new Playlist(doc)));
+            });
+    });
+}
+
+function findPlaylistsLikedByUser(userId) {
+    return new Promise((resolve, reject) => {
+        db.find({ likedBy: userId })
+            .lean()
+            .exec((err, docs) => {
+                if (err) return reject(errors.translate(err, 'retrieve liked playlists'));
+                return resolve(docs.map(doc => new Playlist(doc)));
+            });
+    });
+}
 
 module.exports = {
     Playlist,
     find,
     findById,
     merge,
-    deletePlaylistUser
-    
+    deletePlaylistUser,
+    findSubscribedPlaylistsForUser,
+    findPlaylistsLikedByUser
 };

@@ -1,9 +1,9 @@
 import api from '../api-gateway';
+import user from '../../model/user.model';
 
 class AuthController {
     constructor() {
         this.isAuthenticated = false;
-        this.user = null;
         this.url = null;
     }
 
@@ -11,7 +11,7 @@ class AuthController {
         api.put('/auth', { username, password }, (err, res) => {
             if (err) return cb(err);
             this.isAuthenticated = true;
-            this.user = res.content.user;
+            user.update(res.content.user);
             return cb(null, res);
         });
     }
@@ -43,7 +43,7 @@ class AuthController {
         api.get('/auth', (err, res) => {
             if (err) return cb(err);
             this.isAuthenticated = true;
-            this.user = res.user;
+            user.update(res.user);
             cb(null);
         });
     }

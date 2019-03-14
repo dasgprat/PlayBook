@@ -4,7 +4,10 @@ const config = require('config');
 const path = require('path');
 const { PlaybookError, ErrorCodes } = require('./error');
 const { Strategy } = require('passport-jwt');
+const passport = require('passport');
 const crypto = require('crypto');
+const response = require('../api/v1/response');
+const logger = require('winstonson')(module);
 
 let _config = config.get('security');
 let _key = path.join(process.cwd(), _config.jwt.secretKey);
@@ -20,7 +23,15 @@ function _retrieveSecret(cb) {
     });
 }
 
-function createPassportStrategy(cb) {
+function initializeAuthorization(cb) {
+    _createPassportStrategy((err, strategy) => {
+        if (err) cb(new Error('Failed to create passport strategy: ' + err.message));
+        passport.use(strategy);
+        cb();
+    });
+}
+
+function _createPassportStrategy(cb) {
     if (!_secret) {
         _retrieveSecret(err => {
             if (err) return cb(err);
@@ -54,6 +65,20 @@ function _generateStrategy() {
     );
 }
 
+function authorize(req, res, next) {
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        if (err) {
+            logger.error(err);
+            return response.sendErrorResponse(res, 500, 'Failed to authorize request');
+        }
+        if (!user) {
+            return response.sendErrorResponse(res, 401, 'Unauthorized request');
+        }
+        req.user = user;
+        next();
+    })(req, res, next);
+}
+
 function generateToken(subject) {
     let payload = {
         iss: _issuer,
@@ -63,7 +88,7 @@ function generateToken(subject) {
     };
     return new Promise((resolve, reject) => {
         if (!_secret) {
-            _retrieveSecret((err) => {
+            _retrieveSecret(err => {
                 if (err) return reject(err);
                 jwt.sign(payload, _secret, (err, token) => {
                     if (err) return reject(err);
@@ -107,6 +132,7 @@ function hash(algo, salt, password) {
 module.exports = {
     generateToken,
     verifyToken,
-    createPassportStrategy,
+    initializeAuthorization,
+    authorize,
     hash
 };

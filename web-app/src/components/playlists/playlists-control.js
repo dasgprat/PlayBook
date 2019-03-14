@@ -4,19 +4,23 @@ import PlaylistThumb from './playlist-thumb';
 import {Redirect, withRouter} from 'react-router-dom';
 import { withStyles } from "@material-ui/core/styles";
 import Grid from '@material-ui/core/Grid';
-import api from "../api-gateway";
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
-import green from '@material-ui/core/colors/green';
 import classNames from 'classnames';
+import green from '@material-ui/core/colors/green';
+import {connect} from "react-redux";
+import { fetchPlaylists } from "../actions/playlists";
+import ListSubheader from '@material-ui/core/ListSubheader';
+import { Typography } from '@material-ui/core';
 
 const styles = theme => ({
     root: {
-        flexGrow: 1,
+        //flexGrow: 1,
         margin: theme.spacing.unit,
-        //flexWrap: 'wrap',
+        flexWrap: 'wrap',
         //overflow: 'hidden',
-        //display: 'flex',
+        display: 'flex',
+        backgroundColor: theme.palette.background.paper,
         
     },
     control: {
@@ -29,14 +33,7 @@ const styles = theme => ({
         flexWrap: 'nowrap',        
         height: 369,        
         transform: 'translateZ(0)',
-    },
-    cssRoot: {
-        color: theme.palette.getContrastText(green[500]),
-        backgroundColor: green[500],
-        '&:hover': {
-          backgroundColor: green[700],
-        },
-    },
+    },   
 });
 
 class PlaylistsController extends React.Component {
@@ -44,7 +41,6 @@ class PlaylistsController extends React.Component {
         super(props);
         this.state = {
             username: this.props.match.params.username,
-            playlists: [],
             redirectToReferrer: false
         };
         this.updateRedirectState = this.updateRedirectState.bind(this);
@@ -54,57 +50,56 @@ class PlaylistsController extends React.Component {
         this.setState({redirectToReferrer: true});
     }
 
-    getPlaylists(username, callback) {
-        api.get(`/playlists?username=${username}`, callback);
-        // api.get(`/user/${username}/playlist/5c523fde15bf407420799e69`, callback);
-    }
-
     componentDidMount() {
-        if (this.state.username) {
-            this.getPlaylists(this.state.username, (err, res) => {
-                console.log(res);
-                if (err) {
-                    return this.setState({ playlists: [] });
-                }
-                return this.setState({ playlists: res });
-            });
-        }
+        this.props.fetchPlaylists();
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, playlists } = this.props;
         if (this.state.redirectToReferrer === true) {
             return <Redirect to={`/playlist`}/>;
         }
-
-        this.state.playlists.map(playlist => console.log(playlist));
-        return (
-            <div className={classes.root}>
-                <Grid container justify='center' alignItems="center" spacing={0}>
-                    <Grid item xs={false}>
-                        <Fab variant="extended" color="primary" aria-label="Add" className={classNames(classes.create, classes.cssRoot)}
-                                                onClick={() => this.updateRedirectState()}>
-                            <AddIcon className={classes.extendedIcon} />
-                            Create Playlist                                                            
-                        </Fab>                        
-                    </Grid>
-                </Grid>
-                
-                <Grid container className={classes.root}  spacing={32}>
-                    {this.state.playlists.map(playlist => (
+        //console.log(Object.keys(playlists).length);
+        return (Object.keys(playlists).length == 1) ? (            
+            <div className={classes.root}>              
+                <Grid container className={classes.root}  spacing={32}>                    
+                    {playlists.map(playlist => (
                         <Grid key={playlist.id} className={classes.demo} >
                             <PlaylistThumb playlist={playlist} />
                         </Grid>
                     ))}
-                </Grid>                
-                
+                </Grid>
+            </div>
+        ):(
+            <div className={classes.root}> 
+                <Grid key="playlist.header" className={classes.root} >
+                <ListSubheader color="inherit" className={classes.demo} component="div">Playlists By {this.state.username}</ListSubheader>                                
+                <Grid container className={classes.root}  spacing={32}>                    
+                    {playlists.map(playlist => (
+                        <Grid key={playlist.id} className={classes.demo}>
+                            <PlaylistThumb playlist={playlist} />
+                        </Grid>
+                    ))}
+                </Grid>
+                </Grid>
             </div>
         );
     }
 }
 
+const mapStateToProps = state => ({
+    playlists: state.playlists,
+    user: state.user
+});
+
+const mapDispatchToProps = dispatch => ({
+    fetchPlaylists: () => {
+        dispatch(fetchPlaylists())
+    }
+});
+
 PlaylistsController.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withRouter(withStyles(styles)(PlaylistsController));
+export default withRouter(withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(PlaylistsController)));

@@ -1,7 +1,8 @@
 import React from 'react';
 import AuthView from './auth-view';
-import AuthControl from './auth-control';
 import { withRouter, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { authenticateUser, verifyAuthentication } from '../actions/user';
 
 class Login extends React.Component {
     constructor(properties) {
@@ -9,9 +10,7 @@ class Login extends React.Component {
 
         this.state = {
             username: '',
-            password: '',
-            error: null,
-            loggedIn: null
+            password: ''
         };
 
         this.onLoginFormSubmit = this.onLoginFormSubmit.bind(this);
@@ -20,12 +19,9 @@ class Login extends React.Component {
     }
 
     componentDidMount() {
-        AuthControl.verify(err => {
-            if (err) {
-                return this.setState({ loggedIn: false });
-            }
-            this.setState({ loggedIn: true });
-        });
+        if (this.props.loggedIn === null) {
+            this.props.onVerifyAuthentication();
+        }
     }
 
     onUsernameChange(event) {
@@ -39,29 +35,23 @@ class Login extends React.Component {
     onLoginFormSubmit(event) {
         event.stopPropagation();
         event.preventDefault();
-        AuthControl.authenticate(this.state.username, this.state.password, (err, res) => {
-            if (err) {
-                return this.setState({ error: err.message });
-            }
-            this.setState({ error: null });
-            this.props.history.push(`/home/${AuthControl.user.username}`);
-        });
+        this.props.onLogin(this.state.username, this.state.password);
     }
 
     render() {
-        if (this.state.loggedIn === true) {
-            let pathname = this.props.location.state
-                ? this.props.location.state.from.pathname
-                : `/home/${AuthControl.user.username}`;
+        const { loggedIn, location, username, error } = this.props;
+
+        if (loggedIn === true) {
+            let pathname = location.state ? location.state.from.pathname : `/home/${username}`;
             return <Redirect to={{ pathname }} />;
-        } else if (this.state.loggedIn === false) {
+        } else if (loggedIn === false) {
             return (
                 <AuthView
-                    action={'login'}
+                    action="login"
                     onLoginFormSubmit={this.onLoginFormSubmit}
                     onUsernameChange={this.onUsernameChange}
                     onPasswordChange={this.onPasswordChange}
-                    error={this.state.error}
+                    error={error}
                 />
             );
         } else {
@@ -70,4 +60,39 @@ class Login extends React.Component {
     }
 }
 
-export default withRouter(Login);
+const mapStateToProps = (state, { location }) => ({
+    loggedIn: state.authenticated,
+    username: state.user.username,
+    location,
+    error: state.error
+});
+
+const mapDispatchToProps = (dispatch, { history }) => ({
+    onLogin: (username, password) =>
+        dispatch(authenticateUser(username, password)).then(
+            () => {
+                history.push(`/home/${username}`);
+            },
+            err => {
+                console.log(err);
+            }
+        ),
+
+    onVerifyAuthentication: () =>
+        dispatch(verifyAuthentication()).then(
+            ({ user }) => {
+                console.log(history);
+                history.push(`/home/${user.username}`);
+            },
+            err => {
+                console.log(err);
+            }
+        )
+});
+
+export default withRouter(
+    connect(
+        mapStateToProps,
+        mapDispatchToProps
+    )(Login)
+);

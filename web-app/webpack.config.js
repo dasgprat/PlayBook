@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const config = {
+    context: path.resolve(__dirname),
     entry: './src/index.js',
     output: {
         path: path.join(__dirname, '/dist'),
@@ -21,7 +22,7 @@ const config = {
         ]
     },
     devServer: {
-        historyApiFallback: true
+        historyApiFallback: true,
     },
     plugins: [
         new HtmlWebpackPlugin({ template: './src/index.html' }),

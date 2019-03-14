@@ -17,8 +17,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
-import user from '../../model/user.model';
 import { connect } from 'react-redux';
+import user from '../../model/user.model';
 
 const styles = theme => ({
     content: {
@@ -91,7 +91,7 @@ class Playlist extends React.Component {
                     return this.setState({ playlist: null });
                 }
                 if (res == null) {
-                    return <Redirect to={`/home/${user.get().username}`} />;
+                    return <Redirect to={`/home/${user.username}`} />;
                 }
                 return this.setState({ playlist: res });
             });
@@ -105,12 +105,12 @@ class Playlist extends React.Component {
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes,user} = this.props;
         const { playlist } = this.state;
 
         if (!playlist) {
             if (this.state.renderDeleteOperation == true) {
-                return <Redirect to={`/home/${user.get().username}`} />;
+                return <Redirect to={`/home/${user.username}`} />;
             } else {
                 return <div>Loading! </div>;
             }
@@ -142,7 +142,7 @@ class Playlist extends React.Component {
                         <Grid key={playlist.id} className={classes.demo}>
                             <Paper className={classes.content}>
                                 <div className={classes.section1}>
-                                    <Grid container alignItems="center">
+                                    <Grid container alignItems="center">                                        
                                         {user.username == playlist.author.username ? (
                                             <Grid
                                                 item
@@ -193,7 +193,7 @@ class Playlist extends React.Component {
                                             <Typography variant="title">{playlist.name}</Typography>
                                         </Grid>
                                         <Grid item xs={12} className={classes.section2}>
-                                            <Typography variant="subtitle1">by {playlist.author.name}</Typography>
+                                            <Typography variant="subtitle1">by {user.username}</Typography>
                                         </Grid>
                                     </Grid>
                                 </div>
@@ -230,12 +230,7 @@ class Playlist extends React.Component {
                                                                 <Typography color="primary">
                                                                     <a href={link}>{link}</a>
                                                                 </Typography>
-                                                            </Grid>
-                                                            <Grid item xs={12} className={classes.section2}>
-                                                                <Typography variant="subtitle1">
-                                                                    by {playlist.author.name}
-                                                                </Typography>
-                                                            </Grid>
+                                                            </Grid>                                                            
                                                         </TableCell>
                                                     </TableRow>
                                                 ))}
@@ -243,50 +238,9 @@ class Playlist extends React.Component {
                                         </Table>
                                     </Grid>
                                 </div>
-                                <Divider />
-                                <div className={classes.section2}>
-                                    {playlist.categories.map(category => (
-                                        <Chip
-                                            key={category.name}
-                                            label={category.name}
-                                            className={classes.chip}
-                                            variant="outlined"
-                                        />
-                                    ))}
-                                </div>
-                                <Divider />
-                                <div className={classes.section3}>
-                                    <Typography color="textSecondary" className={classes.section3}>
-                                        {playlist.description}
-                                    </Typography>
-                                </div>
-                                <Divider />
-                                <div className={classes.section4}>
-                                    <Grid container direction="column">
-                                        <Table>
-                                            <TableBody className={classes.section4}>
-                                                {playlist.links.map((link, index) => (
-                                                    <TableRow key={index}>
-                                                        <TableCell
-                                                            component="th"
-                                                            scope="row"
-                                                            className={classes.section4}
-                                                        >
-                                                            <Grid key={index} item xs zeroMinWidth>
-                                                                <Typography color="primary">
-                                                                    <a href={link} target="_blank">
-                                                                        {link}
-                                                                    </a>
-                                                                </Typography>
-                                                            </Grid>
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))}
-                                            </TableBody>
-                                        </Table>
-                                    </Grid>
-                                </div>
-                                <Divider />
+                                
+                              
+                                
                             </Paper>
                         </Grid>
                     </div>

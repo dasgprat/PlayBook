@@ -75,17 +75,17 @@ function generateSearchQuery(query, userId) {
                                         ]
                                     }
                                 ]
-                            },
+                            }                            
+                        ]
+                    },
+                    {
+                        $and: [
+                            { author: userId },
                             {
-                                $and: [
-                                    { author: userId },
-                                    {
-                                        $or: [
-                                            { name: new RegExp(query.search, 'i') },
-                                            { categories: new RegExp(query.search, 'i') },
-                                            { description: new RegExp(query.search, 'i') }
-                                        ]
-                                    }
+                                $or: [
+                                    { name: new RegExp(query.search, 'i') },
+                                    { categories: new RegExp(query.search, 'i') },
+                                    { description: new RegExp(query.search, 'i') }
                                 ]
                             }
                         ]
@@ -104,7 +104,10 @@ function generateSearchQuery(query, userId) {
     }
     return {
         $or: [{ author: userId }, { subscribedBy: userId }]
-    };
+};
+
+
+    
 }
 
 function find(query, userId) {

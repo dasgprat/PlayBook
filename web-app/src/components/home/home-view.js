@@ -21,9 +21,8 @@ class HomeView extends React.Component {
                 <CssBaseline />
                 <div>
                     <Header/>
+                    <Playlists/>                                        
                     <PlaylistsSuggest />
-                    <Divider/>
-                    <Playlists />
                 </div>
                 
             </div>

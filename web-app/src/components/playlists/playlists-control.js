@@ -33,7 +33,14 @@ const styles = theme => ({
         flexWrap: 'nowrap',        
         height: 369,        
         transform: 'translateZ(0)',
-    },   
+    },
+    cssRoot: {
+        color: theme.palette.getContrastText(green[500]),
+        backgroundColor: green[500],
+        '&:hover': {
+            backgroundColor: green[700],
+        },
+    },  
 });
 
 class PlaylistsController extends React.Component {
@@ -62,6 +69,15 @@ class PlaylistsController extends React.Component {
         //console.log(Object.keys(playlists).length);
         return (Object.keys(playlists).length == 1) ? (            
             <div className={classes.root}>              
+                <Grid container justify='center' alignItems="center" spacing={0}>
+                    <Grid item xs={false}>
+                        <Fab variant="extended" color="primary" aria-label="Add" className={classNames(classes.create, classes.cssRoot)}
+                                                onClick={() => this.updateRedirectState()}>
+                            <AddIcon className={classes.extendedIcon} />
+                            Create Playlist                                                            
+                        </Fab>                        
+                    </Grid>
+                </Grid> 
                 <Grid container className={classes.root}  spacing={32}>                    
                     {playlists.map(playlist => (
                         <Grid key={playlist.id} className={classes.demo} >
@@ -72,15 +88,26 @@ class PlaylistsController extends React.Component {
             </div>
         ):(
             <div className={classes.root}> 
-                <Grid key="playlist.header" className={classes.root} >
-                <ListSubheader color="inherit" className={classes.demo} component="div">Playlists By {this.state.username}</ListSubheader>                                
-                <Grid container className={classes.root}  spacing={32}>                    
-                    {playlists.map(playlist => (
-                        <Grid key={playlist.id} className={classes.demo}>
-                            <PlaylistThumb playlist={playlist} />
-                        </Grid>
-                    ))}
-                </Grid>
+                <Grid container justify='center' alignItems="center" spacing={0}>
+                    <Grid item xs={false}>
+                        <Fab variant="extended" color="primary" aria-label="Add" className={classNames(classes.create, classes.cssRoot)}
+                                                onClick={() => this.updateRedirectState()}>
+                            <AddIcon className={classes.extendedIcon} />
+                            Create Playlist                                                            
+                        </Fab>                        
+                    </Grid>
+                </Grid>                
+                <Grid container className={classes.root}  spacing={32}>
+                    <Grid container className={classes.demo}  spacing={32}>
+                        <ListSubheader color="inherit" className={classes.demo} component="div">Playlists Of {this.state.username} and Search Results</ListSubheader>
+                    </Grid>
+                    <Grid container className={classes.root}  spacing={32}>                    
+                        {playlists.map(playlist => (
+                            <Grid key={playlist.id} className={classes.demo}>
+                                <PlaylistThumb playlist={playlist} />
+                            </Grid>
+                        ))}                
+                    </Grid>
                 </Grid>
             </div>
         );

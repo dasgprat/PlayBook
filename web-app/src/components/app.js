@@ -9,6 +9,7 @@ import Playlist from "./playlists/playlist-view";
 import PlaylistInsert from "./playlists/playlist-insert";
 import ProtectedRoute from './auth/protected-route';
 import About from './about/about-control';
+import Legal from './privacy/legal';
 
 class App extends React.Component {
     constructor(props) {
@@ -22,6 +23,7 @@ class App extends React.Component {
                     <Route path="/login" component={Login} />
                     <Route path="/register" component={Register} />
                     <Route path="/about" component={About} />
+                    <Route path="/privacy" component={Legal} />
                     <ProtectedRoute path="/profile/:username" component={Profile} />
                     <ProtectedRoute path="/playlists/:username" component={Playlists} />
                     <ProtectedRoute exact path="/playlist" component={PlaylistInsert} />

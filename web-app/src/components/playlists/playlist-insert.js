@@ -257,7 +257,6 @@ class PlaylistForm extends React.Component {
     }
 
     onFormSubmit(event) {
-        console.log(this.state.links);
         event.stopPropagation();
         event.preventDefault();
         let playlist = {
@@ -322,7 +321,7 @@ class PlaylistForm extends React.Component {
                                     className={classes.select}
                                     defaultOptions={this.state.categories}
                                     dataOptions={this.filterCategories}
-                                    onOptionsChange={this.onCategoriesChange}
+                                    onOptionsChange={this.onCategoriesChange}                                    
                                 />
                             </FormControl>
                             <FormControl margin="normal" required fullWidth>

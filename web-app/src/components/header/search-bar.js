@@ -46,7 +46,7 @@ class SearchBar extends Component {
                         ),
                         disableUnderline: true,
                         className: classes.searchInput,
-                        placeholder: 'Search Playlists'
+                        placeholder: 'Search Playlists and Press Enter'
                     }}
                     onChange={this.onInputChange}
                 />

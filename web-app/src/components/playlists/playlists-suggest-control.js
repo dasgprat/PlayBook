@@ -30,21 +30,14 @@ const styles = theme => ({
         margin: theme.spacing.unit,
     },
     gridList: {
-        flexWrap: 'nowrap',
-        transform: 'translateZ(0)',
+        //flexWrap: 'nowrap',
+        //transform: 'translateZ(0)',
     },
     tile: {
         width: '380px!important',
         height: '100%!important',
         overflow: 'visible!important',
-    },
-    cssRoot: {
-        color: theme.palette.getContrastText(green[500]),
-        backgroundColor: green[500],
-        '&:hover': {
-            backgroundColor: green[700],
-        },
-    },
+    },    
 });
 
 class PlaylistsSuggestController extends React.Component {
@@ -72,25 +65,18 @@ class PlaylistsSuggestController extends React.Component {
         }
 
         return (
-            <div className={classes.root}>
-                <Grid container justify='center' alignItems="center" spacing={0}>
-                    <Grid item xs={false}>
-                        <Fab variant="extended" color="primary" aria-label="Add" className={classNames(classes.create, classes.cssRoot)}
-                                                onClick={() => this.updateRedirectState()}>
-                            <AddIcon className={classes.extendedIcon} />
-                            Create Playlist                                                            
-                        </Fab>                        
+            <div className={classes.root}>                
+                <Grid container className={classes.root}  spacing={32}>
+                    <Grid container className={classes.demo}  spacing={32}>
+                        <ListSubheader color="inherit" className={classes.demo} component="div">Explore Playlists We Found For You</ListSubheader>
                     </Grid>
-                </Grid> 
-                <Grid container spacing={0}>
-                    <ListSubheader color="inherit" className={classes.demo} component="div">Explore Playlists We Found For You</ListSubheader>       
-                    <GridList className={classes.gridList}  cols={2.5}>                                               
+                    <Grid container className={classes.root}  spacing={32}>                                               
                         {suggestions.map(playlist => (                        
-                            <GridListTile key={playlist.id} className={classes.tile}>
+                            <Grid key={playlist.id} className={classes.demo}>
                                 <PlaylistThumb playlist={playlist}/>
-                            </GridListTile>
+                            </Grid>
                         ))}                
-                    </GridList>
+                    </Grid>
                 </Grid>
             </div>
         );

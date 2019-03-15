@@ -106,6 +106,9 @@ function AuthView({
                                 <Typography>
                                     Know more about Playbook <Link to="/about">here</Link>
                                 </Typography>
+                                <Typography>
+                                    By continuing, you agree to our <Link to="/privacy">Privacy Policy</Link>
+                                </Typography>
                             </div>
                         ) : (
                             <div className={classes.register}>
@@ -114,6 +117,9 @@ function AuthView({
                                 </Typography>
                                 <Typography>
                                     Know more about Playbook <Link to="/about">here</Link>
+                                </Typography>
+                                <Typography>
+                                    By continuing, you agree to our <Link to="/privacy">Privacy Policy</Link>
                                 </Typography>
                             </div>
                         )}

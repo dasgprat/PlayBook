@@ -37,7 +37,8 @@ class SelectView extends Component {
                          value={ defaultOptions }
                          defaultOptions={defaultOptions}
                          loadOptions={this.promiseOptions}
-                         onChange={onOptionsChange} />
+                         onChange={onOptionsChange}
+                         placeholder="Type to Add Categories" />
         );
     }
 }

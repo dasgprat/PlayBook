@@ -220,7 +220,8 @@ class PlaylistForm extends React.Component {
     }
 
     onLinksAdd(e) {
-        this.setState({ links: [...this.state.links, this.state.currentLinks] });
+        this.state.currentLinks === '' ?(this.state.currentLinks = ''):
+                this.setState({ links: [...this.state.links, this.state.currentLinks] })
         this.state.currentLinks = '';
     }
     onLinksDelete(e) {

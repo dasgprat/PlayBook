@@ -228,7 +228,7 @@ class Playlist extends React.Component {
                                                         >
                                                             <Grid key={index} item xs zeroMinWidth>
                                                                 <Typography color="primary">
-                                                                    <a href={link}>{link}</a>
+                                                                    <a href={link} target="_blank"> {link} </a>
                                                                 </Typography>
                                                             </Grid>                                                            
                                                         </TableCell>

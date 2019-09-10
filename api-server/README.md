@@ -1,5 +1,6 @@
 # PlayBook API Server
 The PlayBook service is implemented using a Node.js backend with MongoDB for persistence. In order to develop/test/run the backend, you will need to have a running MongoDB instance accessble, either locally on your machine or remotely through a public URL. The recommended way of running MongoDB locally is with [Docker](https://www.docker.com/).
+(Updating the project)
 
 ## Quickstart with Docker
 Run the following commands from the terminal. They assume you have already installed Node.js and Docker.
